@@ -1,0 +1,21 @@
+#player-controller #player-controls-left, #player-fullscreen-button,
+.navigation-content.ytk-masthead,
+.notice-content.ytk-masthead,
+#container.ytk-search-box,
+.navigation-control-container.ytk-masthead{display: none !important;}
+
+video{pointer-events: none}
+#player-container-inner{
+    position: relative;
+}
+.player-overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 100px);
+    z-index: 9999;
+}
+.masthead-settings-icon-container{
+    display: none;
+}

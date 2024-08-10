@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Youtube Kid Theme",
+  "version": "1.0",
+  "description": "Yt kid theme",
+  "icons": {
+    "16": "img/justdog_16.webp",
+    "32": "img/justdog_16.webp",
+    "48": "img/justdog_16.webp",
+    "128": "img/justdog_16.webp"
+  },
+  "permissions": [
+    "webRequest", "tabs", "activeTab"
+  ],
+  "host_permissions": [
+    "*://www.youtubekids.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtubekids.com/*"],
+      "css": ["css/style.css"],
+      "js": [
+        "scripts/content.js"]
+    }
+  ],
+  "web_accessible_resources": [{
+    "matches": ["<all_urls>"],
+    "resources": ["img/justdog_48.webp"]
+  }]
+}
