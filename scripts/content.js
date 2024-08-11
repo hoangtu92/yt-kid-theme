@@ -23,53 +23,59 @@ document.addEventListener('drag', function (event) {
 
 let timeout;
 
-
-document.addEventListener("fullscreenchange", function (e){
-
+const enterFullscreen = function (){
+    document.body.classList.add("fullscreen");
+    window.dispatchEvent(new Event('resize'));
     if(timeout){
         clearTimeout(timeout);
         timeout = 0;
     }
-    else{
-        if(document.fullscreen){
-            timeout = setTimeout(function (){
-                document.exitFullscreen();
-            }, 20000);
-        }
 
+    timeout = setTimeout(function (){
+        exitFullscreen()
+    }, 20000);
+
+
+
+}
+
+const exitFullscreen = function (){
+    document.body.classList.remove("fullscreen");
+    window.dispatchEvent(new Event('resize'));
+    if(timeout){
+        clearTimeout(timeout);
+        timeout = 0;
     }
 
-});
+}
+
 
 document.addEventListener("ytk-masthead-data-ready", function (e){
 
     let video = document.querySelector("video.video-stream");
     let container = document.querySelector("ytk-player")
 
+    console.log("Player Ready", e, video)
 
     if(video){
 
         video.addEventListener("pause", function () {
             this.play();
+            console.log("Video pause")
         });
 
         video.addEventListener("play", function (e) {
-            if(e.isTrusted && !document.fullscreen){
-                this.requestFullscreen();
-            }
+            console.log("Video play")
+            enterFullscreen()
         });
 
         video.addEventListener("click", function (e) {
-            video.currentTime += 20
+            video.currentTime += 20;
+            console.log("Video click to seek")
         });
 
         container.addEventListener("yt-playback-ended", function (e){
-            if(document.fullscreen)
-                document.exitFullscreen();
-        })
-
-        container.addEventListener("yt-navigate", function (e){
-            console.log(e);
+            exitFullscreen()
         })
 
         let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
@@ -78,7 +84,7 @@ document.addEventListener("ytk-masthead-data-ready", function (e){
             video.currentTime += 20
         });
 
-        document.querySelector("#player-container-inner").append(playerOverlay);
+        document.querySelector("ytk-player").append(playerOverlay);
 
     }
 
