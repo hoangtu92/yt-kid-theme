@@ -49,43 +49,43 @@ const exitFullscreen = function (){
 
 }
 
+let video, container;
 
-document.addEventListener("ytk-masthead-data-ready", function (e){
+document.addEventListener("click", function (e){
 
-    let video = document.querySelector("video.video-stream");
-    let container = document.querySelector("ytk-player")
+    if(!video && !container){
+        video = document.querySelector("video.video-stream");
+        container = document.querySelector("ytk-player")
 
-    console.log("Player Ready", e, video)
+        if(video && container){
 
-    if(video){
+            video.addEventListener("pause", function () {
+                this.play();
+                console.log("Video pause")
+            });
 
-        video.addEventListener("pause", function () {
-            this.play();
-            console.log("Video pause")
-        });
+            video.addEventListener("play", function (e) {
+                console.log("Video play")
+                enterFullscreen()
+            });
 
-        video.addEventListener("play", function (e) {
-            console.log("Video play")
-            enterFullscreen()
-        });
+            video.addEventListener("click", function (e) {
+                video.currentTime += 20;
+                console.log("Video click to seek")
+            });
 
-        video.addEventListener("click", function (e) {
-            video.currentTime += 20;
-            console.log("Video click to seek")
-        });
+            container.addEventListener("yt-playback-ended", function (e){
+                exitFullscreen()
+            })
 
-        container.addEventListener("yt-playback-ended", function (e){
-            exitFullscreen()
-        })
+            let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
 
-        let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
+            playerOverlay.addEventListener("click", function (e){
+                video.currentTime += 20
+            });
 
-        playerOverlay.addEventListener("click", function (e){
-            video.currentTime += 20
-        });
+            document.querySelector("ytk-player").append(playerOverlay);
 
-        document.querySelector("ytk-player").append(playerOverlay);
-
+        }
     }
-
 })

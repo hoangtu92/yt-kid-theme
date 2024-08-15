@@ -6,13 +6,15 @@
 .fullscreen #masthead
 {display: none !important;}
 
-video{
+video, ytk-player{
     pointer-events: none;
     transition: 500ms;
     -webkit-transition: 500ms;
     transform-origin: center;
 }
-
+ytk-player{
+    z-index: 999;
+}
 #player-container-inner{
     position: relative;
 }
@@ -22,7 +24,7 @@ video{
     left: 0;
     width: 100%;
     height: calc(100% - 100px);
-    z-index: 99999999;
+    z-index: 9999999999999;
     cursor: pointer;
 }
 .masthead-settings-icon-container{
