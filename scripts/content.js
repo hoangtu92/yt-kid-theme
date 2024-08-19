@@ -21,12 +21,19 @@ document.addEventListener('drag', function (event) {
     event.stopPropagation();
 }, true);
 
-let timeout;
+let timeout, interval;
 
 const enterFullscreen = function (){
     document.body.classList.add("fullscreen");
     window.dispatchEvent(new Event('resize'));
 
+    if(interval){
+        clearInterval(interval);
+    }
+
+    interval = setInterval(function (){
+        showNav();
+    }, 60000)
 }
 function hideNav(){
     if(timeout){
@@ -50,20 +57,6 @@ function showNav(){
 
 
 let video, container, videoWidth, videoHeight, videoLeft, videoTop;
-
-const exitFullscreen = function (e){
-    document.body.classList.remove("fullscreen");
-    window.dispatchEvent(new Event("resize"));
-
-    if(timeout){
-        clearTimeout(timeout);
-        timeout = 0;
-    }
-
-    video.style.width = videoWidth + "px";
-    video.style.height = videoHeight + "px";
-
-}
 
 document.addEventListener("click", function (e){
 
