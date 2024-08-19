@@ -32,32 +32,40 @@ const enterFullscreen = function (){
     }
 
     timeout = setTimeout(function (){
-        exitFullscreen()
-    }, 20000);
+        nav.style.display = "block"
+    }, 5000);
 
 
 
 }
 
-const exitFullscreen = function (){
+let video, container, videoWidth, videoHeight, videoLeft, videoTop;
+
+const exitFullscreen = function (e){
     document.body.classList.remove("fullscreen");
-    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event("resize"));
+
     if(timeout){
         clearTimeout(timeout);
         timeout = 0;
     }
 
-}
+    video.style.width = videoWidth + "px";
+    video.style.height = videoHeight + "px";
 
-let video, container;
+}
 
 document.addEventListener("click", function (e){
 
     if(!video && !container){
         video = document.querySelector("video.video-stream");
-        container = document.querySelector("ytk-player")
+        container = document.querySelector("ytk-player");
+        nav = document.querySelector("#secondary-results");
 
         if(video && container){
+
+            videoWidth = video.clientWidth;
+            videoHeight = video.clientHeight;
 
             video.addEventListener("pause", function () {
                 this.play();
@@ -66,7 +74,8 @@ document.addEventListener("click", function (e){
 
             video.addEventListener("play", function (e) {
                 console.log("Video play")
-                enterFullscreen()
+                enterFullscreen();
+                nav.style.display = "none"
             });
 
             video.addEventListener("click", function (e) {
@@ -75,16 +84,21 @@ document.addEventListener("click", function (e){
             });
 
             container.addEventListener("yt-playback-ended", function (e){
-                exitFullscreen()
+                exitFullscreen();
             })
 
             let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
 
             playerOverlay.addEventListener("click", function (e){
-                video.currentTime += 20
+                video.currentTime += 20;
+
             });
 
-            document.querySelector("ytk-player").append(playerOverlay);
+
+            document.querySelector("#player-container-inner").append(playerOverlay);
+
+
+
 
         }
     }

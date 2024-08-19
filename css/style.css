@@ -31,6 +31,10 @@ ytk-player{
     display: none;
 }
 
+.fullscreen{
+    overflow: hidden;
+}
+
 .fullscreen ytk-player{
     position: fixed !important;
     left: 0 !important;;
@@ -39,5 +43,42 @@ ytk-player{
     height: 100vh !important;;
     z-index: 999999 !important;;
 }
+.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer{
+    z-index: 999999;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    overflow: auto;
+    display: none;
+}
+
+.fullscreen #player-controller.ytk-player{
+    display: none;
+}
+
+.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    /* Full width of its parent */
+    white-space: nowrap;
+}
+.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related > * {
+    /* Start off the right edge */
+    transform: translateX(100%);
+    /* Animate to the left */
+    animation: scroll-left 20s linear infinite;
+}
 
 
+@keyframes scroll-left {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
