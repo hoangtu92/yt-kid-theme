@@ -26,18 +26,28 @@ let timeout;
 const enterFullscreen = function (){
     document.body.classList.add("fullscreen");
     window.dispatchEvent(new Event('resize'));
+
+}
+function hideNav(){
+    if(timeout){
+        clearTimeout(timeout);
+        timeout = 0;
+    }
+    nav.style.display = "none"
+}
+function showNav(){
     if(timeout){
         clearTimeout(timeout);
         timeout = 0;
     }
 
+    nav.style.display = "block"
+
     timeout = setTimeout(function (){
-        nav.style.display = "block"
-    }, 5000);
-
-
-
+        hideNav();
+    }, 20000);
 }
+
 
 let video, container, videoWidth, videoHeight, videoLeft, videoTop;
 
@@ -75,7 +85,6 @@ document.addEventListener("click", function (e){
             video.addEventListener("play", function (e) {
                 console.log("Video play")
                 enterFullscreen();
-                nav.style.display = "none"
             });
 
             video.addEventListener("click", function (e) {
@@ -84,13 +93,18 @@ document.addEventListener("click", function (e){
             });
 
             container.addEventListener("yt-playback-ended", function (e){
-                exitFullscreen();
+                showNav();
             })
 
             let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
 
             playerOverlay.addEventListener("click", function (e){
-                video.currentTime += 20;
+                if(nav.style.display == "block"){
+                    hideNav()
+                }
+                else{
+                    showNav();
+                }
 
             });
 
