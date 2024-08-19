@@ -19,12 +19,12 @@ ytk-player{
     position: relative;
 }
 .player-overlay{
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: calc(100% - 100px);
-    z-index: 9999999999999;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999999;
     cursor: pointer;
 }
 .masthead-settings-icon-container{
@@ -44,7 +44,7 @@ ytk-player{
     z-index: 999999 !important;;
 }
 .fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer{
-    z-index: 999999;
+    z-index: 99999999999;
     position: absolute;
     width: 100%;
     bottom: 0;
