@@ -1,8 +1,14 @@
 #player-controller #player-controls-left, #player-fullscreen-button,
+/*
 .navigation-content.ytk-masthead,
+*/
+
 .notice-content.ytk-masthead,
-#container.ytk-search-box,
+
+/*#container.ytk-search-box,*/
+/*
 .navigation-control-container.ytk-masthead,
+*/
 .fullscreen #masthead
 {display: none !important;}
 

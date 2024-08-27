@@ -58,14 +58,15 @@ function showNav(){
 
 let video, container, videoWidth, videoHeight, videoLeft, videoTop;
 
-document.addEventListener("click", function (e){
+function initYtTheme (e) {
+    console.log("Init", e)
 
-    if(!video && !container){
+    if (!video && !container) {
         video = document.querySelector("video.video-stream");
         container = document.querySelector("ytk-player");
         nav = document.querySelector("#secondary-results");
 
-        if(video && container){
+        if (video && container) {
 
             videoWidth = video.clientWidth;
             videoHeight = video.clientHeight;
@@ -85,28 +86,33 @@ document.addEventListener("click", function (e){
                 console.log("Video click to seek")
             });
 
-            container.addEventListener("yt-playback-ended", function (e){
+            container.addEventListener("yt-playback-ended", function (e) {
                 showNav();
             })
 
             let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
 
-            playerOverlay.addEventListener("click", function (e){
-                if(nav.style.display == "block"){
+            const toggleNav = function (e) {
+                if (nav.style.display == "block") {
                     hideNav()
-                }
-                else{
+                } else {
                     showNav();
                 }
 
-            });
+            }
 
+            playerOverlay.addEventListener("click", function (){
+                video.currentTime += 20;
+            });
 
             document.querySelector("#player-container-inner").append(playerOverlay);
 
 
-
-
         }
     }
-})
+};
+
+document.addEventListener("click", initYtTheme);
+document.addEventListener("touchstart", initYtTheme);
+
+
