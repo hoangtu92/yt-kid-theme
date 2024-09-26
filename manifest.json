@@ -20,7 +20,10 @@
       "matches": ["*://www.youtubekids.com/*"],
       "css": ["css/style.css"],
       "js": [
-        "scripts/content.js"]
+        "scripts/touch-emulator.js",
+        "scripts/content.js"
+
+      ]
     }
   ],
   "web_accessible_resources": [{

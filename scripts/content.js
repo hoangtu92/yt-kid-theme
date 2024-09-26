@@ -1,15 +1,21 @@
 let video, container, videoWidth, videoHeight, videoLeft, videoTop, nav, search, anchorRow;
 
-function clickSearch(e){
-    document.querySelector("input.style-scope.ytk-search-box").value = e.getAttribute("data-search")
-    document.querySelector("#search-icon").click();
-    document.body.classList.add("search-mode");
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0));
+}
 
+if(isTouchDevice()){
+    console.log("Touch device")
+    new TouchEmulator();
 }
 
 function initYtTheme (request) {
 
+
     if (!video && !container) {
+
         video = document.querySelector("video.video-stream");
         container = document.querySelector("ytk-player");
         nav = document.querySelector("#secondary-results");
@@ -42,32 +48,24 @@ function initYtTheme (request) {
 
 
             let quickSearch = htmlToElement(`<div id="quick-search">
-<div class="search-item">
-<a data-search="Baby Sensory Video" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/bear.png")}"/></a>
-</div>
+<a data-search="Baby Sensory Video" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/bear.png")}"/></a>
 
-<div class="search-item">
-<a data-search="Rachel's English" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.png")}"/></a>
-</div>
+<a data-search="Rachel's English" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.png")}"/></a>
+<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/dancing.png")}"/></a>
 
-<div class="search-item">
-<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/dancing.png")}"/></a>
-</div>
-
-<div class="search-item">
-<a data-search="Fruit slice, animal name" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/strawberry.png")}"/></a>
-</div>
+<a data-search="Fruit slice, animal name" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/strawberry.png")}"/></a>
 
 </div>`);
 
             nav.prepend(quickSearch);
 
-            document.querySelectorAll(".search-item a").forEach((o) => {
-                console.log(o);
+            document.querySelectorAll("a.search-item").forEach((o) => {
                 o.onclick = function (e){
                     e.preventDefault();
-                    clickSearch(o);
-                }
+                    document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
+                    document.body.classList.add("search-mode");
+                    document.querySelector("#search-icon").click()
+                };
             })
 
         }
