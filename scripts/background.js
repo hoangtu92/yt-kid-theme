@@ -1,16 +1,21 @@
 let pos_tab;
-let last_query_list;
 /**
  * Trigger when admin load order list or click next page
  */
+
 chrome.webRequest.onCompleted.addListener(function(request) {
         console.log(request);
-        if(request.statusCode === 200){
-
-
+        if(request.statusCode === 204){
+            console.log(pos_tab)
+            // Todo open loading indicate for creating order
+            if(pos_tab){
+                chrome.tabs.sendMessage(pos_tab.id, {action: "video_ready", request: request}, function (response){
+                    console.log(response)
+                });
+            }
         }
     },
-    {urls: ["https://seller.shopee.tw/api/v3/order/search_order_list_index*"]},
+    {urls: ["*://*.youtubekids.com/api/stats/playback*"]},
     ["responseHeaders"]
 );
 

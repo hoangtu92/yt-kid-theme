@@ -1,9 +1,100 @@
-function htmlToElement(html) {
-    let template = document.createElement('template');
-    html = html.trim(); // Never return a text node of whitespace as the result
-    template.innerHTML = html;
-    return template.content.firstChild;
+let video, container, videoWidth, videoHeight, videoLeft, videoTop, nav, search, anchorRow;
+
+function clickSearch(e){
+    document.querySelector("input.style-scope.ytk-search-box").value = e.getAttribute("data-search")
+    document.querySelector("#search-icon").click();
+    document.body.classList.add("search-mode");
+
 }
+
+function initYtTheme (request) {
+
+    if (!video && !container) {
+        video = document.querySelector("video.video-stream");
+        container = document.querySelector("ytk-player");
+        nav = document.querySelector("#secondary-results");
+        search = document.querySelector("#masthead");
+
+        if (video && container) {
+
+            videoWidth = video.clientWidth;
+            videoHeight = video.clientHeight;
+
+            video.addEventListener("pause", function () {
+                showNav();
+            });
+
+            video.addEventListener("play", function () {
+                hideNav();
+            });
+
+            container.addEventListener("yt-playback-ended", function (e) {
+                showNav();
+            })
+
+            let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
+            playerOverlay.addEventListener("click", function (){
+                toggleNav();
+            });
+            document.querySelector("#player-container-inner").append(playerOverlay);
+
+
+
+
+            let quickSearch = htmlToElement(`<div id="quick-search">
+<div class="search-item">
+<a data-search="Baby Sensory Video" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/bear.png")}"/></a>
+</div>
+
+<div class="search-item">
+<a data-search="Rachel's English" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.png")}"/></a>
+</div>
+
+<div class="search-item">
+<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/dancing.png")}"/></a>
+</div>
+
+<div class="search-item">
+<a data-search="Fruit slice, animal name" class="search-item-button" href="#"><img src="${chrome.runtime.getURL("img/strawberry.png")}"/></a>
+</div>
+
+</div>`);
+
+            nav.prepend(quickSearch);
+
+            document.querySelectorAll(".search-item a").forEach((o) => {
+                console.log(o);
+                o.onclick = function (e){
+                    e.preventDefault();
+                    clickSearch(o);
+                }
+            })
+
+        }
+    }
+};
+/**
+ * Listen to background event message
+ */
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log("Receive background message: ", message)
+    switch (message.action) {
+        case "video_ready":
+            initYtTheme(message.request)
+            enterFullscreen();
+            break;
+    }
+    sendResponse("Content: ", message.action + " Ok");
+});
+
+
+window.addEventListener("load", function (e) {
+    pingServiceWorker();
+})
+
+window.addEventListener("click", function (e) {
+    pingServiceWorker();
+})
 
 
 document.addEventListener("contextmenu", function (e) {
@@ -21,98 +112,48 @@ document.addEventListener('drag', function (event) {
     event.stopPropagation();
 }, true);
 
+
+
 let timeout, interval;
 
 const enterFullscreen = function (){
     document.body.classList.add("fullscreen");
+    document.body.classList.remove("search-mode");
     window.dispatchEvent(new Event('resize'));
 
-    if(interval){
-        clearInterval(interval);
-    }
-
-    interval = setInterval(function (){
-        showNav();
-    }, 60000)
 }
 function hideNav(){
-    if(timeout){
-        clearTimeout(timeout);
-        timeout = 0;
-    }
-    nav.style.display = "none"
+    nav.style.display = "none";
+    //search.style.cssText = "display: none !important";
 }
 function showNav(){
-    if(timeout){
-        clearTimeout(timeout);
-        timeout = 0;
+    nav.style.display = "block";
+    //search.style.cssText = "display: flex !important"
+}
+
+const toggleNav = function (e) {
+    if (nav.style.display == "block") {
+        hideNav()
+    } else {
+        showNav();
     }
+}
 
-    nav.style.display = "block"
-
-    timeout = setTimeout(function (){
-        hideNav();
-    }, 20000);
+function htmlToElement(html) {
+    let template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
 }
 
 
-let video, container, videoWidth, videoHeight, videoLeft, videoTop;
+/**
+ * Send to background
+ */
 
-function initYtTheme (e) {
-    console.log("Init", e)
-
-    if (!video && !container) {
-        video = document.querySelector("video.video-stream");
-        container = document.querySelector("ytk-player");
-        nav = document.querySelector("#secondary-results");
-
-        if (video && container) {
-
-            videoWidth = video.clientWidth;
-            videoHeight = video.clientHeight;
-
-            video.addEventListener("pause", function () {
-                this.play();
-                console.log("Video pause")
-            });
-
-            video.addEventListener("play", function (e) {
-                console.log("Video play")
-                enterFullscreen();
-            });
-
-            video.addEventListener("click", function (e) {
-                video.currentTime += 20;
-                console.log("Video click to seek")
-            });
-
-            container.addEventListener("yt-playback-ended", function (e) {
-                showNav();
-            })
-
-            let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
-
-            const toggleNav = function (e) {
-                if (nav.style.display == "block") {
-                    hideNav()
-                } else {
-                    showNav();
-                }
-
-            }
-
-            playerOverlay.addEventListener("click", function (){
-                video.currentTime += 20;
-            });
-
-            document.querySelector("#player-container-inner").append(playerOverlay);
-
-
-        }
-    }
-};
-
-document.addEventListener("click", initYtTheme);
-document.addEventListener("touchstart", initYtTheme);
-
+function pingServiceWorker() {
+    chrome.runtime.sendMessage("ContentJS: Wake up baby", function (response) {
+        console.log(response);
+    });
+}
 
