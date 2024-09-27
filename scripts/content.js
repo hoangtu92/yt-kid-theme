@@ -1,14 +1,46 @@
 let video, container, videoWidth, videoHeight, videoLeft, videoTop, nav, search, anchorRow;
 
+function clickSearch(e){
+    document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
+
+}
+
 function isTouchDevice() {
     return (('ontouchstart' in window) ||
         (navigator.maxTouchPoints > 0) ||
         (navigator.msMaxTouchPoints > 0));
 }
 
-if(isTouchDevice()){
-    console.log("Touch device")
-    new TouchEmulator();
+/**
+ * trigger a touch event
+ * @param eventName
+ * @param mouseEv
+ */
+function triggerTouch(eventTarget, eventName, mouseEv) {
+
+    const touchObj = new Touch({
+        identifier: Date.now(),
+        target: eventTarget,
+        clientX: mouseEv.clientX,
+        clientY: mouseEv.clientY,
+        radiusX: 2.5,
+        radiusY: 2.5,
+        rotationAngle: 10,
+        force: 0.5,
+    });
+
+    var touchEvent = new TouchEvent(eventName, {
+        cancelable: true,
+        bubbles: true,
+        touches: [touchObj],
+        targetTouches: [touchObj],
+        changedTouches: [touchObj],
+        shiftKey: true,
+        altKey: mouseEv.altKey,
+        ctrlKey: mouseEv.ctrlKey,
+    });
+
+    eventTarget.dispatchEvent(touchEvent);
 }
 
 function initYtTheme (request) {
@@ -59,13 +91,45 @@ function initYtTheme (request) {
 
             nav.prepend(quickSearch);
 
+            let searchIcon = document.querySelector("#search-icon");
+            searchIcon.addEventListener("touchstart", (e) => {
+                console.log("Touch Start", e)
+            })
+            searchIcon.addEventListener("touchend", (e) => {
+                console.log("Touch End", e)
+            })
             document.querySelectorAll("a.search-item").forEach((o) => {
-                o.onclick = function (e){
-                    e.preventDefault();
-                    document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
-                    document.body.classList.add("search-mode");
-                    document.querySelector("#search-icon").click()
-                };
+
+                if(isTouchDevice()){
+                    console.log("Touch device")
+
+                    o.addEventListener("touchstart", (e) => {
+                        clickSearch(e)
+                        triggerTouch(searchIcon, 'touchstart', e);
+                    })
+
+                    o.addEventListener("touchend", (e) => {
+                        triggerTouch(searchIcon, 'touchend', e);
+                    })
+
+                    o.addEventListener("mousedown", (e) => {
+                        clickSearch(e)
+                        triggerTouch(searchIcon, 'touchstart', e);
+                    })
+
+                    o.addEventListener("mouseup", (e) => {
+                        triggerTouch(searchIcon, 'touchend', e);
+                    })
+                }
+                else{
+                    o.onclick = function (e){
+                        e.preventDefault();
+                        clickSearch(e)
+                        searchIcon.click();
+                    };
+                }
+
+
             })
 
         }
@@ -112,8 +176,6 @@ document.addEventListener('drag', function (event) {
 
 
 
-let timeout, interval;
-
 const enterFullscreen = function (){
     document.body.classList.add("fullscreen");
     document.body.classList.remove("search-mode");
@@ -122,11 +184,11 @@ const enterFullscreen = function (){
 }
 function hideNav(){
     nav.style.display = "none";
-    //search.style.cssText = "display: none !important";
+    document.body.classList.remove("search-mode");
 }
 function showNav(){
     nav.style.display = "block";
-    //search.style.cssText = "display: flex !important"
+    document.body.classList.add("search-mode");
 }
 
 const toggleNav = function (e) {

@@ -52,7 +52,8 @@ ytk-player{
 
 .fullscreen #secondary-results{
     display: none;
-    margin-top: 10px;
+    padding-top: 10px;
+    background: rgba(0, 0, 0, 0.52);
 }
 .fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer{
     z-index: 99999999999;
