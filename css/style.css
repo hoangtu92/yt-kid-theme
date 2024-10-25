@@ -127,6 +127,19 @@ ytk-player{
 }
 */
 
+*::-webkit-scrollbar {
+    width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #e5476f;
+    outline: 1px solid #d9053c;
+}
+
 
 @keyframes scroll-left {
     0% {

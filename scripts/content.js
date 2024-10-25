@@ -139,9 +139,11 @@ function initYtTheme (request) {
 <a data-search="Baby Sensory Video" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/bear.png")}"/></a>
 
 <a data-search="Rachel's English" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.png")}"/></a>
-<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/dancing.png")}"/></a>
+<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music.png")}"/></a>
 
-<a data-search="Fruit slice, animal name" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/strawberry.png")}"/></a>
+<a data-search="Fruit slice" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/strawberry.png")}"/></a>
+<a data-search="I love vegetable" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/vegetable.png")}"/></a>
+<a data-search="Animals name" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/livestock.png")}"/></a>
 
 </div>`);
 
