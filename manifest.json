@@ -28,7 +28,7 @@
   ],
   "web_accessible_resources": [{
     "matches": ["<all_urls>"],
-    "resources": ["img/justdog_48.webp", "img/bear.png", "img/dancing.png", "img/strawberry.png", "img/teacher.png", "img/vegetable.png", "img/livestock.png", "img/music.png"]
+    "resources": ["img/*"]
   }],
   "background": {
     "service_worker": "scripts/background.js",

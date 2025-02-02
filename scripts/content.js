@@ -136,14 +136,16 @@ function initYtTheme (request) {
 
 
             let quickSearch = htmlToElement(`<div id="quick-search">
-<a data-search="Baby Sensory Video" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/bear.png")}"/></a>
+<a data-search="Baby Sensory Video" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/panda.gif")}"/></a>
+<a data-search="Teddy Kittens" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/cat.gif")}"/></a>
+<a data-search="Tom and jerry" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/watching-movie.gif")}"/></a>
+ 
+<a data-search="Rachel's English" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.gif")}"/></a>
+<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family, frog" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music-note.gif")}"/></a>
 
-<a data-search="Rachel's English" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.png")}"/></a>
-<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music.png")}"/></a>
-
-<a data-search="Fruit slice" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/strawberry.png")}"/></a>
-<a data-search="I love vegetable" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/vegetable.png")}"/></a>
-<a data-search="Animals name" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/livestock.png")}"/></a>
+<a data-search="Fruit slice" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/fruit.gif")}"/></a>
+<a data-search="I love vegetable" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/healthy-food.gif")}"/></a>
+<a data-search="Animals name" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/frog.gif")}"/></a>
 
 </div>`);
 
@@ -206,6 +208,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     sendResponse("Content: ", message.action + " Ok");
 });
+
+window.addEventListener("keyup", function (e){
+    console.log(e);
+    switch(e.key){
+        case "ArrowDown":
+            showNav();
+            break;
+    }
+})
 
 
 window.addEventListener("load", function (e) {
