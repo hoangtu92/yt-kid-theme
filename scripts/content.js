@@ -141,11 +141,11 @@ function initYtTheme (request) {
 <a data-search="Tom and jerry" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/watching-movie.gif")}"/></a>
  
 <a data-search="Rachel's English" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.gif")}"/></a>
-<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family, frog" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music.gif")}"/></a>
+<a data-search="Kids songs" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music.gif")}"/></a>
 
-<a data-search="Fruit slice" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/fruit.gif")}"/></a>
+<a data-search="Art for Kids Hub" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/creativity.gif")}"/></a>
 <a data-search="học nói" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/baby-boy.gif")}"/></a>
-<a data-search="Animals name" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/frog.gif")}"/></a>
+<a data-search="Game Play Together" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/children.gif")}"/></a>
 
 </div>`);
 
