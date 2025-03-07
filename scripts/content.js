@@ -137,14 +137,14 @@ function initYtTheme (request) {
 
             let quickSearch = htmlToElement(`<div id="quick-search">
 <a data-search="Baby Sensory Video" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/panda.gif")}"/></a>
-<a data-search="Teddy Kittens" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/cat.gif")}"/></a>
+<a data-search="Nhạc thiếu nhi" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/singer.gif")}"/></a>
 <a data-search="Tom and jerry" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/watching-movie.gif")}"/></a>
  
 <a data-search="Rachel's English" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.gif")}"/></a>
-<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family, frog" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music-note.gif")}"/></a>
+<a data-search="Wheel on the Bus, Bingo, Twinkle Twinkle Little star, Finger family, frog" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music.gif")}"/></a>
 
 <a data-search="Fruit slice" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/fruit.gif")}"/></a>
-<a data-search="I love vegetable" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/healthy-food.gif")}"/></a>
+<a data-search="học nói" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/baby-boy.gif")}"/></a>
 <a data-search="Animals name" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/frog.gif")}"/></a>
 
 </div>`);
