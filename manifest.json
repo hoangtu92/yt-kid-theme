@@ -10,7 +10,7 @@
     "128": "img/justdog_16.webp"
   },
   "permissions": [
-    "webRequest", "tabs", "activeTab"
+    "webRequest", "tabs", "activeTab", "scripting"
   ],
   "host_permissions": [
     "*://www.youtubekids.com/*"

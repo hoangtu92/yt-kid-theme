@@ -113,8 +113,8 @@ ytk-player{
     display: block;
 }
 
-#quick-search .search-item img{
-    width: 64px;
+#quick-search .search-item-button img{
+    width: 96px;
     height: auto;
 }
 
@@ -140,7 +140,10 @@ ytk-player{
     outline: 1px solid #d9053c;
 }
 
-
+.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related,
+#related-header.ytk-two-column-watch-next-results-renderer{
+    display: none;
+}
 @keyframes scroll-left {
     0% {
         transform: translateX(100%);

@@ -1,6 +1,41 @@
 let video, container, videoWidth, videoHeight, videoLeft, videoTop, nav, search, anchorRow;
 
+
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+recognition.lang = 'vi-VN';
+recognition.continuous = false;
+recognition.interimResults = false;
+
+recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+
+    const input = document.querySelector('.search-box input');
+    if (input) {
+        input.value = text;
+
+        // trigger input event (important for React/Vue sites)
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+
+        // submit form
+        input.form?.submit();
+    }
+};
+
+recognition.onerror = (err) => {
+    console.error(err);
+};
+
+// expose function so popup can trigger it
+window.startVoiceSearch = () => {
+    recognition.start();
+};
+
+
 function clickSearch(e){
+    console.log(e)
+    if(e.target.getAttribute("data-action") === "startMic") recognition.start();
+    else
     document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
 
 }
@@ -13,6 +48,7 @@ function isTouchDevice() {
 
 /**
  * trigger a touch event
+ * @param eventTarget
  * @param eventName
  * @param mouseEv
  */
@@ -29,7 +65,7 @@ function triggerTouch(eventTarget, eventName, mouseEv) {
         force: 0.5,
     });
 
-    var touchEvent = new TouchEvent(eventName, {
+    let touchEvent = new TouchEvent(eventName, {
         cancelable: true,
         bubbles: true,
         touches: [touchObj],
@@ -42,6 +78,48 @@ function triggerTouch(eventTarget, eventName, mouseEv) {
 
     eventTarget.dispatchEvent(touchEvent);
 }
+
+const enterFullscreen = function (){
+    document.body.classList.add("fullscreen");
+    document.body.classList.remove("search-mode");
+    window.dispatchEvent(new Event('resize'));
+
+}
+function hideNav(){
+    nav.style.display = "none";
+    document.body.classList.remove("search-mode");
+}
+function showNav(){
+    nav.style.display = "block";
+    document.body.classList.add("search-mode");
+}
+
+const toggleNav = function (e) {
+    if (nav.style.display === "block") {
+        hideNav()
+    } else {
+        showNav();
+    }
+}
+
+function htmlToElement(html) {
+    let template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+
+/**
+ * Send to background
+ */
+
+function pingServiceWorker() {
+    chrome.runtime.sendMessage("ContentJS: Wake up baby", function (response) {
+        console.log(response);
+    });
+}
+
 
 function initYtTheme (request) {
 
@@ -72,7 +150,8 @@ function initYtTheme (request) {
 
             let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
             playerOverlay.addEventListener("click", function (){
-                video.currentTime += 20;
+                //video.currentTime += 20;
+                toggleNav();
             });
 
 
@@ -89,7 +168,7 @@ function initYtTheme (request) {
                 const firstTouch = getTouches(evt)[0];
                 xDown = firstTouch.clientX;
                 yDown = firstTouch.clientY;
-            };
+            }
 
 
             playerOverlay.addEventListener("touchstart", handleTouchStart);
@@ -98,11 +177,11 @@ function initYtTheme (request) {
                     return;
                 }
 
-                var xUp = evt.touches[0].clientX;
-                var yUp = evt.touches[0].clientY;
+                let xUp = evt.touches[0].clientX;
+                let yUp = evt.touches[0].clientY;
 
-                var xDiff = xDown - xUp;
-                var yDiff = yDown - yUp;
+                let xDiff = xDown - xUp;
+                let yDiff = yDown - yUp;
 
                 if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
                     if ( xDiff > 0 ) {
@@ -136,16 +215,14 @@ function initYtTheme (request) {
 
 
             let quickSearch = htmlToElement(`<div id="quick-search">
-<a data-search="Baby Sensory Video" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/panda.gif")}"/></a>
-<a data-search="Nhạc thiếu nhi" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/singer.gif")}"/></a>
-<a data-search="Tom and jerry" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/watching-movie.gif")}"/></a>
+<a data-search="Nhạc thiếu nhi, Kids songs" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music.gif")}"/></a>
+<a data-search="Disney, cartoon, 3D animated, hoạt hình" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/watching-movie.gif")}"/></a>
  
-<a data-search="Rachel's English" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.gif")}"/></a>
-<a data-search="Kids songs" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/music.gif")}"/></a>
+<a data-search="learn English, học nói, learn to speak" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/teacher.gif")}"/></a>
 
-<a data-search="Art for Kids Hub" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/creativity.gif")}"/></a>
-<a data-search="học nói" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/baby-boy.gif")}"/></a>
-<a data-search="Game Play Together" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/children.gif")}"/></a>
+<a data-search="Painting, color, drawing" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/creativity.gif")}"/></a>
+<a data-search="outdoor, fun game" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/children.gif")}"/></a>
+<a class="search-item-button search-item" data-action="startMic" href="#"><img data-action="startMic" src="${chrome.runtime.getURL("img/podcast.gif")}"/></a>
 
 </div>`);
 
@@ -158,7 +235,9 @@ function initYtTheme (request) {
             searchIcon.addEventListener("touchend", (e) => {
                 console.log("Touch End", e)
             })
-            document.querySelectorAll("a.search-item").forEach((o) => {
+
+
+            document.querySelectorAll("a.search-item-button").forEach((o) => {
 
                 if(isTouchDevice()){
                     console.log("Touch device")
@@ -194,7 +273,7 @@ function initYtTheme (request) {
 
         }
     }
-};
+}
 /**
  * Listen to background event message
  */
@@ -242,47 +321,3 @@ document.addEventListener('drag', function (event) {
     event.preventDefault();
     event.stopPropagation();
 }, true);
-
-
-
-const enterFullscreen = function (){
-    document.body.classList.add("fullscreen");
-    document.body.classList.remove("search-mode");
-    window.dispatchEvent(new Event('resize'));
-
-}
-function hideNav(){
-    nav.style.display = "none";
-    document.body.classList.remove("search-mode");
-}
-function showNav(){
-    nav.style.display = "block";
-    document.body.classList.add("search-mode");
-}
-
-const toggleNav = function (e) {
-    if (nav.style.display == "block") {
-        hideNav()
-    } else {
-        showNav();
-    }
-}
-
-function htmlToElement(html) {
-    let template = document.createElement('template');
-    html = html.trim(); // Never return a text node of whitespace as the result
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-
-/**
- * Send to background
- */
-
-function pingServiceWorker() {
-    chrome.runtime.sendMessage("ContentJS: Wake up baby", function (response) {
-        console.log(response);
-    });
-}
-
