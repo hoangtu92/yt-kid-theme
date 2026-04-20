@@ -38,6 +38,7 @@ async function searchVideo(text) {
  * @param e
  */
 function fillSearchResult(e) {
+    console.log(e)
     let text = e.target.getAttribute("data-search");
     if (text) {
         document.querySelector("input.style-scope.ytk-search-box").value = text;
