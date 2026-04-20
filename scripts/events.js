@@ -92,7 +92,6 @@ document.addEventListener('drag', function (event) {
 
 document.addEventListener("pointerdown", async function (e) {
 
-
     if(e.target.className.includes("search-item-button")){
 
         if(e.target.getAttribute("data-action") === 'voiceRecognition'){
@@ -111,44 +110,17 @@ document.addEventListener("pointerdown", async function (e) {
 
             const handler = (evt) => {
 
-                console.log(evt)
                 setTimeout(() => {
                     searchIcon.click()
                 }, 0); // or 50ms if needed
                 document.removeEventListener('pointerup', handler);
+                triggerTouch(searchIcon, 'touchend', evt);
             };
 
             document.addEventListener('pointerup', handler);
-
-
 
         }
 
     }
 
-})
-/**
- * Quick search button
- */
-/*document.addEventListener('mousedown',  async (e) => {
-    if(e.target.className.includes("search-item-button")){
-        let searchIcon = document.querySelector("#search-icon");
-        await fillSearchResult(e)
-        triggerTouch(searchIcon, 'touchstart', e);
-    }
 });
-document.addEventListener('mouseup',  async (e) => {
-    if(e.target.className.includes("search-item-button")){
-        let searchIcon = document.querySelector("#search-icon");
-        triggerTouch(searchIcon, 'touchend', e);
-    }
-});
-
-document.addEventListener('click',  async (e) => {
-    if(e.target.className.includes("search-item-button")){
-        let searchIcon = document.querySelector("#search-icon");
-        e.preventDefault();
-        await fillSearchResult(e)
-        searchIcon.click();
-    }
-});*/
