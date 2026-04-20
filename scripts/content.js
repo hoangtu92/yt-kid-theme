@@ -1,12 +1,14 @@
 let video, container, videoWidth, videoHeight, videoLeft, videoTop, nav, search, anchorRow;
 function speak(text) {
-    const voices = window.speechSynthesis.getVoices();
-    const vietnameseVoice = voices.find(v => v.lang === 'vi-VN');
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'vi-VN'; // or 'vi-VN'
-    utterance.voice = vietnameseVoice;
+    return new Promise((resolve, reject) => {
+        const voices = window.speechSynthesis.getVoices();
+        const vietnameseVoice = voices.find(v => v.lang === 'vi-VN');
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'vi-VN'; // or 'vi-VN'
+        utterance.voice = vietnameseVoice;
 
-    speechSynthesis.speak(utterance);
+        speechSynthesis.speak(utterance);
+    })
 }
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -15,50 +17,49 @@ recognition.lang = 'vi-VN';
 recognition.continuous = false;
 recognition.interimResults = false;
 
-function searchVideo(text){
-    speak("Tìm " + text + " nhé");
+async function searchVideo(text) {
+    await speak("Tìm " + text + " nhé");
     let searchIcon = document.querySelector("#search-icon");
     let input = document.querySelector("input.style-scope.ytk-search-box")
     if (input) {
         input.value = text;
-        speak("Tìm thấy rồi nè")
+        await speak("Tìm thấy rồi nè")
 
         searchIcon.click();
     }
 }
 
 
-function buttonHandle(e){
+async function buttonHandle(e) {
     let text = e.currentTarget.getAttribute("data-search");
-    if(text.length){
+    if (text.length) {
 
 
-        if(e.type === "touchstart" || e.type === "mousedown" || e.type === "click"){
-            speak(`Con chọn video gì nào?`);
+        if (e.type === "touchstart" || e.type === "mousedown" || e.type === "click") {
+            await speak(`Con chọn xem gì nào?`);
             document.querySelector("input.style-scope.ytk-search-box").value = text;
         }
 
 
         let searchIcon = document.querySelector("#search-icon");
 
-        if(isTouchDevice()){
+        if (isTouchDevice()) {
             triggerTouch(searchIcon, e.type, e);
-        }
-        else searchIcon.click();
+        } else searchIcon.click();
     }
 
 }
 
 
-recognition.onresult = (event) => {
+recognition.onresult = async (event) => {
     const text = event.results[0][0].transcript;
-    searchVideo(text);
+    await searchVideo(text);
 };
 
-recognition.onerror = (err) => {
+recognition.onerror = async (err) => {
     console.error(err);
-    speak("Ba không nghe thấy gì");
-    searchVideo("Nhong nhong nhong")
+    await speak("Ba không nghe thấy gì");
+    await searchVideo("Nhong nhong nhong")
 
 };
 
@@ -258,10 +259,8 @@ function initYtTheme (request) {
 
             nav.prepend(quickSearch);
 
-            let searchIcon = document.querySelector("#search-icon");
-
-            document.querySelector("#startMic").addEventListener("pointerdown", function (){
-                speak("Xin chào, Con muốn xem gì nào?");
+            document.querySelector("#startMic").addEventListener("pointerdown", async function () {
+                await speak("Xin chào, Con muốn xem gì nào?");
                 recognition.start();
                 video.pause();
 
