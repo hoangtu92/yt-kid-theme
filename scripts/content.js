@@ -16,6 +16,7 @@ recognition.continuous = false;
 recognition.interimResults = false;
 
 function searchVideo(text){
+    speak("Tìm " + text + " nhé");
     let searchIcon = document.querySelector("#search-icon");
     let input = document.querySelector("input.style-scope.ytk-search-box")
     if (input) {
@@ -27,8 +28,25 @@ function searchVideo(text){
 }
 
 
-function fillSearchValue(e){
-    document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
+function buttonHandle(e){
+    let text = e.currentTarget.getAttribute("data-search");
+    if(text.length){
+
+
+        if(e.type === "touchstart" || e.type === "mousedown" || e.type === "click"){
+            speak(`Con chọn video gì nào?`);
+            document.querySelector("input.style-scope.ytk-search-box").value = text;
+        }
+
+
+        let searchIcon = document.querySelector("#search-icon");
+
+        if(isTouchDevice()){
+            triggerTouch(searchIcon, e.type, e);
+        }
+        else searchIcon.click();
+    }
+
 }
 
 
@@ -39,7 +57,7 @@ recognition.onresult = (event) => {
 
 recognition.onerror = (err) => {
     console.error(err);
-    speak("Mẹ không nghe thấy gì, mở nhong nhong nhong nhé");
+    speak("Ba không nghe thấy gì");
     searchVideo("Nhong nhong nhong")
 
 };
@@ -245,36 +263,24 @@ function initYtTheme (request) {
             document.querySelector("#startMic").addEventListener("pointerdown", function (){
                 speak("Xin chào, Con muốn xem gì nào?");
                 recognition.start();
+                video.pause();
+
             })
             document.querySelectorAll("a.search-item-button").forEach((o) => {
 
                 if(isTouchDevice()){
                     console.log("Touch device")
 
-                    o.addEventListener("touchstart", (e) => {
-                        fillSearchValue(e)
-                        triggerTouch(searchIcon, 'touchstart', e);
-                    })
+                    o.addEventListener("touchstart", buttonHandle)
 
-                    o.addEventListener("touchend", (e) => {
-                        triggerTouch(searchIcon, 'touchend', e);
-                    })
+                    o.addEventListener("touchend", buttonHandle)
 
-                    o.addEventListener("mousedown", (e) => {
-                        fillSearchValue(e)
-                        triggerTouch(searchIcon, 'touchstart', e);
-                    })
+                    o.addEventListener("mousedown", buttonHandle)
 
-                    o.addEventListener("mouseup", (e) => {
-                        triggerTouch(searchIcon, 'touchend', e);
-                    })
+                    o.addEventListener("mouseup", buttonHandle)
                 }
                 else{
-                    o.onclick = function (e){
-                        e.preventDefault();
-                        fillSearchValue(e)
-                        searchIcon.click();
-                    };
+                    o.onclick = buttonHandle;
                 }
 
 
@@ -296,16 +302,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     sendResponse("Content: ", message.action + " Ok");
 });
-
-window.addEventListener("keyup", function (e){
-    console.log(e);
-    switch(e.key){
-        case "ArrowDown":
-            showNav();
-            break;
-    }
-})
-
 
 window.addEventListener("load", function (e) {
     pingServiceWorker();
