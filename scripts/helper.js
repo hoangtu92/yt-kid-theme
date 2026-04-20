@@ -74,20 +74,6 @@ function triggerTouch(eventTarget, eventName, mouseEv) {
             force: 0.5,
         })];
     }
-    /*else if(mouseEv.touches){
-        touches = Array.from(mouseEv.touches).map(e => {
-            return new Touch({
-                identifier: Date.now(),
-                target: eventTarget,
-                clientX: e.clientX,
-                clientY: e.clientY,
-                radiusX: 2.5,
-                radiusY: 2.5,
-                rotationAngle: 10,
-                force: 0.5,
-            })
-        })
-    }*/
 
     let touchEvent = new TouchEvent(eventName, {
         cancelable: true,
@@ -172,6 +158,7 @@ function changeLanguage(lang){
 
     localStorage.setItem("selected_language", lang);
 
+
     document.querySelectorAll(".search-row").forEach(e => {
         e.style.display = "none";
     });
@@ -185,7 +172,7 @@ function changeLanguage(lang){
  */
 function getLanguage(){
 
-    return localStorage.getItem("selected_language");
+    return localStorage.getItem("selected_language")  || 'en-US';
 
 }
 
@@ -201,9 +188,7 @@ function renderSearch(container, data) {
         const row = document.createElement('div');
         row.className = 'search-row';
         row.dataset.lang = lang;
-
-        // show first by default (or customize)
-        if (index === 1) row.style.display = 'block';
+        row.style.display = lang === getLanguage() ? "block" : "none"
 
         const quick = document.createElement('div');
         quick.className = 'quick-search';
@@ -232,6 +217,7 @@ function renderSearch(container, data) {
                 input.name= "lang";
                 input.style.display = "none";
                 input.value = item.targetLang;
+                input.checked = item.targetLang === getLanguage()
                 a.appendChild(input);
             }
 

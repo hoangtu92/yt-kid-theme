@@ -1,7 +1,7 @@
 window.addEventListener("load", function (e) {
     pingServiceWorker();
 
-    changeLanguage("en-US")
+    changeLanguage(getLanguage())
 
     let lang = getLanguage();
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -109,12 +109,18 @@ document.addEventListener("pointerdown", async function (e) {
             fillSearchResult(e);
 
             const handler = (evt) => {
-
-                setTimeout(() => {
-                    searchIcon.click()
-                }, 0); // or 50ms if needed
                 document.removeEventListener('pointerup', handler);
-                triggerTouch(searchIcon, 'touchend', evt);
+
+                if(isTouchDevice()){
+                    triggerTouch(searchIcon, 'touchstart', evt);
+                    triggerTouch(searchIcon, 'touchend', evt);
+                }
+                else{
+                    setTimeout(() => {
+                        searchIcon.click()
+                    }, 0); // or 50ms if needed
+                }
+
             };
 
             document.addEventListener('pointerup', handler);
