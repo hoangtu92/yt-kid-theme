@@ -92,6 +92,7 @@ document.addEventListener('drag', function (event) {
 
 document.addEventListener("pointerdown", async function (e) {
 
+
     if(e.target.className.includes("search-item-button")){
 
         if(e.target.getAttribute("data-action") === 'voiceRecognition'){
@@ -106,9 +107,21 @@ document.addEventListener("pointerdown", async function (e) {
         }
         else{
             let searchIcon = document.querySelector("#search-icon");
-
             fillSearchResult(e);
-            searchIcon.click()
+
+            const handler = (evt) => {
+
+                console.log(evt)
+                setTimeout(() => {
+                    searchIcon.click()
+                }, 0); // or 50ms if needed
+                document.removeEventListener('pointerup', handler);
+            };
+
+            document.addEventListener('pointerup', handler);
+
+
+
         }
 
     }
