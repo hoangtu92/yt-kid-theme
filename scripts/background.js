@@ -21,7 +21,7 @@ function handleUrl(tabId, url) {
 
 chrome.webRequest.onCompleted.addListener(function(request) {
 
-        if(request.statusCode === 204){
+        if(request.statusCode <= 204 && request.statusCode >= 200){
 
             if(pos_tab){
                 let eventName = "";
