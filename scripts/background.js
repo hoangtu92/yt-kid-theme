@@ -1,23 +1,63 @@
 let pos_tab;
-/**
- * Trigger when admin load order list or click next page
- */
 
 chrome.webRequest.onCompleted.addListener(function(request) {
-        console.log(request);
+
         if(request.statusCode === 204){
-            console.log(pos_tab)
-            // Todo open loading indicate for creating order
+
             if(pos_tab){
-                chrome.tabs.sendMessage(pos_tab.id, {action: "video_ready", request: request}, function (response){
-                    console.log(response)
-                });
+                let eventName = "";
+                if(request.url.includes("api/stats/playback")){
+                    eventName = "video_ready"
+                }
+
+
+                if(eventName){
+
+                    chrome.tabs.sendMessage(pos_tab.id, {action: eventName, request: request}, function (response){
+                        console.log(response)
+                    });
+                }
+
             }
         }
     },
-    {urls: ["*://*.youtubekids.com/api/stats/playback*"]},
+    {urls: ["*://*.youtubekids.com/*"]},
     ["responseHeaders"]
 );
+const lastUrlMap = {};
+function handleUrl(tabId, url) {
+
+    if(!pos_tab) return;
+
+    if(!/#$/.test(url)) url += "#"
+
+    if (!url || lastUrlMap[tabId] === url) return;
+
+
+    if (url.includes('search')) {
+        lastUrlMap[tabId] = url;
+        console.log('Search detected:', url);
+        chrome.tabs.sendMessage(pos_tab.id, {action: "video_list"}, function (response){
+            console.log(response)
+        });
+    }
+}
+// normal load
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete') {
+        handleUrl(tabId, tab.url);
+    }
+});
+
+// SPA navigation
+chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
+    handleUrl(details.tabId, details.url);
+});
+
+// hash change
+chrome.webNavigation.onReferenceFragmentUpdated.addListener((details) => {
+    handleUrl(details.tabId, details.url);
+});
 
 
 /**

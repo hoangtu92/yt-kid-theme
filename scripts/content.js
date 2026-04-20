@@ -26,8 +26,6 @@ async function searchVideo(text) {
     let input = document.querySelector("input.style-scope.ytk-search-box")
     if (input) {
         input.value = text;
-        await speak("Tìm thấy rồi nè")
-
         searchIcon.click();
     }
 }
@@ -35,14 +33,13 @@ async function searchVideo(text) {
 
 async function buttonHandle(e) {
     let text = e.currentTarget.getAttribute("data-search");
-    if (text.length) {
+    let takeAction = e.type === "touchstart" || e.type === "mousedown" || e.type === "click";
+    if (text) {
 
 
-        if (e.type === "touchstart" || e.type === "mousedown" || e.type === "click") {
-            await speak(`Con chọn xem gì nào?`);
+        if (takeAction) {
             document.querySelector("input.style-scope.ytk-search-box").value = text;
         }
-
 
         let searchIcon = document.querySelector("#search-icon");
 
@@ -294,12 +291,15 @@ function initYtTheme (request) {
 /**
  * Listen to background event message
  */
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log("Receive background message: ", message)
     switch (message.action) {
         case "video_ready":
             initYtTheme(message.request)
             enterFullscreen();
+            break;
+        case "video_list":
+            await speak("Tìm thấy rồi nè, Con chọn gì?")
             break;
     }
     sendResponse("Content: ", message.action + " Ok");
