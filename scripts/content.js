@@ -1,5 +1,13 @@
 let video, container, videoWidth, videoHeight, videoLeft, videoTop, nav, search, anchorRow;
+function speak(text) {
+    const voices = speechSynthesis.getVoices();
+    const vietnameseVoice = voices.find(v => v.lang === 'vi-VN');
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'vi-VN'; // or 'vi-VN'
+    utterance.voice = vietnameseVoice;
 
+    speechSynthesis.speak(utterance);
+}
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
@@ -14,6 +22,8 @@ recognition.onresult = (event) => {
     if (input) {
         input.value = text;
 
+        speak("Ok, để mẹ tìm cho nhé")
+
         searchIcon.click();
     }
 
@@ -24,15 +34,23 @@ recognition.onerror = (err) => {
     console.error(err);
 };
 
+
+
 // expose function so popup can trigger it
 window.startVoiceSearch = () => {
     recognition.start();
 };
 
 
+
+
+
 function clickSearch(e){
     console.log(e)
-    if(e.target.getAttribute("data-action") === "startMic") recognition.start();
+    if(e.target.getAttribute("data-action") === "startMic") {
+        speak("Hello, Con muốn xem gì nào?");
+        recognition.start();
+    }
     else
     document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
 
