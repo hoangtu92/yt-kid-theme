@@ -5,12 +5,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log("Receive background message: ", message)
     switch (message.action) {
         case "video_ready":
-
-            let nav = document.querySelector("#secondary-results");
-            let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
-            document.querySelector("#player-container-inner").append(playerOverlay);
-            renderSearch(nav, searchData);
-
+            renderQuickSearchMenu();
             enterFullscreen();
             break;
         case "video_list":
@@ -21,6 +16,3 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     sendResponse("Content: ", message.action + " Ok");
 });
-
-
-

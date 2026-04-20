@@ -176,15 +176,15 @@ function getLanguage(){
 
 }
 
-/**
- *
- * @param container
- * @param data
- */
-function renderSearch(container, data) {
+function renderQuickSearchMenu() {
+
+    let container = document.querySelector("#secondary-results");
+    let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
+    document.querySelector("#player-container-inner").append(playerOverlay);
+
     container.innerHTML = '';
 
-    Object.entries(data).forEach(([lang, items], index) => {
+    Object.entries(searchData).forEach(([lang, items], index) => {
         const row = document.createElement('div');
         row.className = 'search-row';
         row.dataset.lang = lang;
