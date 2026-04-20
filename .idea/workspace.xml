@@ -5,8 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6862efc1-0fe0-4981-b4d4-b2ee0454ccaf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/img/abc.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/abc_1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/children_1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/dad.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/mom.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/music_1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/painting.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/painting_1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/video.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/video_1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/events.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/helper.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/language.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/search-data.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/start.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/start.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/dancing.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/livestock.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/music.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/teacher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/vegetable.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/background.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/background.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/content.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/content.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +99,7 @@
       <workItem from="1760688339049" duration="2159000" />
       <workItem from="1769317045884" duration="236000" />
       <workItem from="1776517934721" duration="10000" />
-      <workItem from="1776678501249" duration="13233000" />
+      <workItem from="1776678501249" duration="28653000" />
     </task>
     <servers />
   </component>

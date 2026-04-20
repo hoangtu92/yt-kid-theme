@@ -96,7 +96,7 @@ ytk-player{
     position: relative;
 }
 
-#quick-search{
+.quick-search{
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -105,7 +105,7 @@ ytk-player{
     margin: 10px auto;
     align-items: center;
 }
-#quick-search a{
+.quick-search a, .quick-search label{
     background: white;
     border-radius: 50%;
     padding: 20px;
@@ -113,11 +113,17 @@ ytk-player{
     display: block;
 }
 
-#quick-search .search-item-button img{
+.quick-search .search-item-button img{
     width: 96px;
     height: auto;
-}
 
+}
+.quick-search a img{
+    pointer-events: none;
+}
+.search-row{
+    display: none;
+}
 /*
 .fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related > * {
     !* Start off the right edge *!

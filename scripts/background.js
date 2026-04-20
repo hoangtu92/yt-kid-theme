@@ -1,4 +1,23 @@
 let pos_tab;
+const lastUrlMap = {};
+function handleUrl(tabId, url) {
+
+    if(!pos_tab) return;
+
+    if(!/#$/.test(url)) url += "#"
+
+    if (!url || lastUrlMap[tabId] === url) return;
+
+
+    if (url.includes('search')) {
+        lastUrlMap[tabId] = url;
+        console.log('Search detected:', url);
+        const parsedUrl = new URL(url);
+        chrome.tabs.sendMessage(pos_tab.id, {action: "video_list",  speak: parsedUrl.searchParams.get('q')}, function (response){
+            console.log(response)
+        });
+    }
+}
 
 chrome.webRequest.onCompleted.addListener(function(request) {
 
@@ -9,7 +28,6 @@ chrome.webRequest.onCompleted.addListener(function(request) {
                 if(request.url.includes("api/stats/playback")){
                     eventName = "video_ready"
                 }
-
 
                 if(eventName){
 
@@ -24,24 +42,7 @@ chrome.webRequest.onCompleted.addListener(function(request) {
     {urls: ["*://*.youtubekids.com/*"]},
     ["responseHeaders"]
 );
-const lastUrlMap = {};
-function handleUrl(tabId, url) {
 
-    if(!pos_tab) return;
-
-    if(!/#$/.test(url)) url += "#"
-
-    if (!url || lastUrlMap[tabId] === url) return;
-
-
-    if (url.includes('search')) {
-        lastUrlMap[tabId] = url;
-        console.log('Search detected:', url);
-        chrome.tabs.sendMessage(pos_tab.id, {action: "video_list"}, function (response){
-            console.log(response)
-        });
-    }
-}
 // normal load
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete') {
