@@ -8,6 +8,9 @@ function speak(text) {
         utterance.voice = vietnameseVoice;
 
         speechSynthesis.speak(utterance);
+
+        utterance.onend = resolve;
+        utterance.onerror = reject;
     })
 }
 
@@ -260,9 +263,9 @@ function initYtTheme (request) {
             nav.prepend(quickSearch);
 
             document.querySelector("#startMic").addEventListener("pointerdown", async function () {
+                video.pause();
                 await speak("Xin chào, Con muốn xem gì nào?");
                 recognition.start();
-                video.pause();
 
             })
             document.querySelectorAll("a.search-item-button").forEach((o) => {
