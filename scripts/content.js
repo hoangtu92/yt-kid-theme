@@ -9,17 +9,15 @@ recognition.interimResults = false;
 
 recognition.onresult = (event) => {
     const text = event.results[0][0].transcript;
-
-    const input = document.querySelector('.search-box input');
+    let searchIcon = document.querySelector("#search-icon");
+    let input = document.querySelector("input.style-scope.ytk-search-box")
     if (input) {
         input.value = text;
 
-        // trigger input event (important for React/Vue sites)
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-
-        // submit form
-        input.form?.submit();
+        searchIcon.click();
     }
+
+    console.log(text);
 };
 
 recognition.onerror = (err) => {
