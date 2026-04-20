@@ -1,8 +1,6 @@
 window.addEventListener("load", function (e) {
     pingServiceWorker();
 
-    changeLanguage(getLanguage())
-
     let lang = getLanguage();
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = lang;
