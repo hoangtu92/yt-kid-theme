@@ -1,6 +1,6 @@
 let video, container, videoWidth, videoHeight, videoLeft, videoTop, nav, search, anchorRow;
 function speak(text) {
-    const voices = speechSynthesis.getVoices();
+    const voices = window.speechSynthesis.getVoices();
     const vietnameseVoice = voices.find(v => v.lang === 'vi-VN');
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'vi-VN'; // or 'vi-VN'
@@ -15,23 +15,33 @@ recognition.lang = 'vi-VN';
 recognition.continuous = false;
 recognition.interimResults = false;
 
-recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
+function searchVideo(text){
     let searchIcon = document.querySelector("#search-icon");
     let input = document.querySelector("input.style-scope.ytk-search-box")
     if (input) {
         input.value = text;
-
-        speak("Ok, để mẹ tìm cho nhé")
+        speak("Tìm thấy rồi nè")
 
         searchIcon.click();
     }
+}
 
-    console.log(text);
+
+function fillSearchValue(e){
+    document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
+}
+
+
+recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    searchVideo(text);
 };
 
 recognition.onerror = (err) => {
     console.error(err);
+    speak("Mẹ không nghe thấy gì, mở nhong nhong nhong nhé");
+    searchVideo("Nhong nhong nhong")
+
 };
 
 
@@ -41,20 +51,6 @@ window.startVoiceSearch = () => {
     recognition.start();
 };
 
-
-
-
-
-function clickSearch(e){
-    console.log(e)
-    if(e.target.getAttribute("data-action") === "startMic") {
-        speak("Hello, Con muốn xem gì nào?");
-        recognition.start();
-    }
-    else
-    document.querySelector("input.style-scope.ytk-search-box").value = e.currentTarget.getAttribute("data-search")
-
-}
 
 function isTouchDevice() {
     return (('ontouchstart' in window) ||
@@ -238,28 +234,25 @@ function initYtTheme (request) {
 
 <a data-search="Painting, color, drawing" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/creativity.gif")}"/></a>
 <a data-search="outdoor, fun game" class="search-item search-item-button" href="#"><img src="${chrome.runtime.getURL("img/children.gif")}"/></a>
-<a class="search-item-button search-item" data-action="startMic" href="#"><img data-action="startMic" src="${chrome.runtime.getURL("img/podcast.gif")}"/></a>
+<a class="search-item-button" id="startMic" data-action="startMic" href="#"><img data-action="startMic" src="${chrome.runtime.getURL("img/podcast.gif")}"/></a>
 
 </div>`);
 
             nav.prepend(quickSearch);
 
             let searchIcon = document.querySelector("#search-icon");
-            searchIcon.addEventListener("touchstart", (e) => {
-                console.log("Touch Start", e)
-            })
-            searchIcon.addEventListener("touchend", (e) => {
-                console.log("Touch End", e)
-            })
 
-
+            document.querySelector("#startMic").addEventListener("pointerdown", function (){
+                speak("Xin chào, Con muốn xem gì nào?");
+                recognition.start();
+            })
             document.querySelectorAll("a.search-item-button").forEach((o) => {
 
                 if(isTouchDevice()){
                     console.log("Touch device")
 
                     o.addEventListener("touchstart", (e) => {
-                        clickSearch(e)
+                        fillSearchValue(e)
                         triggerTouch(searchIcon, 'touchstart', e);
                     })
 
@@ -268,7 +261,7 @@ function initYtTheme (request) {
                     })
 
                     o.addEventListener("mousedown", (e) => {
-                        clickSearch(e)
+                        fillSearchValue(e)
                         triggerTouch(searchIcon, 'touchstart', e);
                     })
 
@@ -279,7 +272,7 @@ function initYtTheme (request) {
                 else{
                     o.onclick = function (e){
                         e.preventDefault();
-                        clickSearch(e)
+                        fillSearchValue(e)
                         searchIcon.click();
                     };
                 }
