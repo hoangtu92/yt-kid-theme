@@ -2,33 +2,36 @@
 
 sleep 1
 
-# directory of this script
-DIR="$(cd "$(dirname "$0")" && pwd)"
-CHROMIUM_DIR="$DIR/chromium"
-ZIP="$CHROMIUM_DIR/chromium.zip"
-mkdir -p "$CHROMIUM_DIR"
-
-CHROMIUM_APP="$CHROMIUM_DIR/Chromium.app/Contents/MacOS/Chromium"
-
 ARCH=$(uname -m)
 
 if [ "$ARCH" = "arm64" ]; then
-  PLATFORM="Mac_Arm"
+  PLATFORM="mac-arm64"
 else
-  PLATFORM="Mac"
+  PLATFORM="mac-x64"
 fi
 
 echo "Detected architecture: $ARCH → $PLATFORM"
 
+# directory of this script
+DIR="$(cd "$(dirname "$0")" && pwd)"
+CFT_DIR="$DIR/chrome-for-testing"
+APP="$CFT_DIR/chrome-$PLATFORM/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+ZIP="$CFT_DIR/chrome.zip"
+
+mkdir -p "$CFT_DIR"
+
+
 # 👉 Download (Intel Mac)
-if [ ! -f "$CHROMIUM_DIR/Chromium.app/Contents/MacOS/Chromium" ]; then
-  echo "Downloading Chromium for $PLATFORM..."
+# 👉 download Chrome for Testing nếu chưa có
+if [ ! -f "$APP" ]; then
+  echo "Downloading Chrome for Testing..."
 
-  curl -L --retry 3 --retry-delay 2 --fail "https://download-chromium.appspot.com/dl/$PLATFORM?type=snapshots" -o "$ZIP"
+  URL="https://storage.googleapis.com/chrome-for-testing-public/147.0.7727.57/$PLATFORM/chrome-$PLATFORM.zip"
 
-  unzip -o "$ZIP" -d "$CHROMIUM_DIR"
-  mv "$CHROMIUM_DIR"/chrome-mac/* "$CHROMIUM_DIR"/
-  rm -rf "$CHROMIUM_DIR/chrome-mac" "$ZIP"
+  curl -L --retry 3 --fail "$URL" -o "$ZIP"
+
+  unzip -o "$ZIP" -d "$CFT_DIR"
+  rm "$ZIP"
 
   echo "Done."
 fi
@@ -40,7 +43,7 @@ xattr -dr com.apple.quarantine "$CHROMIUM_DIR" || true
 killall "Chromium" 2>/dev/null || true
 
 # 👉 4. Run Chromium kiosk + extension
-"$CHROMIUM_APP" \
+"$APP" \
   --kiosk \
   --user-data-dir="$DIR/profile" \
   --load-extension="$DIR" \

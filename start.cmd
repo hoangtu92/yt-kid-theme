@@ -1,35 +1,65 @@
 @echo off
+setlocal
 
+REM ===== config =====
+set VERSION=147.0.7727.57
+
+REM ===== paths =====
 set "DIR=%~dp0"
 set "DIR=%DIR:~0,-1%"
-set CHROMIUM_DIR=%DIR%\chromium
-set ZIP=%CHROMIUM_DIR%\chromium.zip
-set APP=%CHROMIUM_DIR%\chrome-win\chrome.exe
+set "CFT_DIR=%DIR%\chrome-for-testing"
+set "ZIP=%CFT_DIR%\chrome.zip"
 
-if not exist "%CHROMIUM_DIR%" mkdir "%CHROMIUM_DIR%"
+REM ===== detect 32/64 =====
+if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+    set PLATFORM=win64
+    set EXE=chrome-win64\chrome.exe
+) else (
+    set PLATFORM=win32
+    set EXE=chrome-win32\chrome.exe
+)
 
+set "APP=%CFT_DIR%\%EXE%"
+
+echo Platform: %PLATFORM%
+
+REM ===== create dir =====
+if not exist "%CFT_DIR%" mkdir "%CFT_DIR%"
+
+REM ===== download if missing =====
 if not exist "%APP%" (
-    echo Downloading Chromium...
+    echo Downloading Chrome for Testing...
 
-    powershell -Command "Invoke-WebRequest -Uri https://download-chromium.appspot.com/dl/Win?type=snapshots -OutFile '%ZIP%'"
+    set URL=https://storage.googleapis.com/chrome-for-testing-public/%VERSION%/%PLATFORM%/chrome-%PLATFORM%.zip
 
-    powershell -Command "Expand-Archive -Path '%ZIP%' -DestinationPath '%CHROMIUM_DIR%' -Force"
+    powershell -Command "Invoke-WebRequest -Uri '%URL%' -OutFile '%ZIP%'"
+
+    powershell -Command "Expand-Archive -Path '%ZIP%' -DestinationPath '%CFT_DIR%' -Force"
 
     del "%ZIP%"
 
     echo Done.
 )
 
+REM ===== kill old =====
 taskkill /IM chrome.exe /F >nul 2>&1
+
+REM ===== kiosk loop =====
+:loop
+
+echo Starting Chrome for Testing...
+
 
 "%APP%" ^
   --kiosk ^
   --user-data-dir="%DIR%\profile" ^
   --load-extension="%DIR%" ^
   --disable-extensions-except="%DIR%" ^
+  --use-angle=d3d11 ^
+  --enable-gpu ^
+  --ignore-gpu-blocklist ^
   --enable-gpu-rasterization ^
   --enable-zero-copy ^
-  --ignore-gpu-blocklist ^
   --disable-background-networking ^
   --disable-background-timer-throttling ^
   --disable-renderer-backgrounding ^
