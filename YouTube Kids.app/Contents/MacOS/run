@@ -1,0 +1,3 @@
+#!/bin/bash
+cd "/Users/hoangtu92/IdeaProjects/youtube-kid-theme"
+./start.sh
