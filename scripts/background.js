@@ -19,6 +19,11 @@ function handleUrl(tabId, url) {
     }
 }
 
+chrome.runtime.onStartup.addListener(() => {
+    console.log("Extension reload")
+    chrome.runtime.reload();
+});
+
 chrome.webRequest.onCompleted.addListener(function(request) {
 
         if(request.statusCode <= 204 && request.statusCode >= 200){
