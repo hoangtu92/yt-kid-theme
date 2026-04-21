@@ -1,16 +1,13 @@
 @echo off
-SETLOCAL
 
-REM thư mục hiện tại
-set DIR=%~dp0
-set CHROMIUM_DIR=%DIR%chromium
+set "DIR=%~dp0"
+set "DIR=%DIR:~0,-1%"
+set CHROMIUM_DIR=%DIR%\chromium
 set ZIP=%CHROMIUM_DIR%\chromium.zip
 set APP=%CHROMIUM_DIR%\chrome-win\chrome.exe
 
-REM tạo thư mục nếu chưa có
 if not exist "%CHROMIUM_DIR%" mkdir "%CHROMIUM_DIR%"
 
-REM download nếu chưa có
 if not exist "%APP%" (
     echo Downloading Chromium...
 
@@ -23,13 +20,11 @@ if not exist "%APP%" (
     echo Done.
 )
 
-REM kill Chromium cũ
 taskkill /IM chrome.exe /F >nul 2>&1
 
-REM chạy Chromium
 "%APP%" ^
   --kiosk ^
-  --user-data-dir="%DIR%profile" ^
+  --user-data-dir="%DIR%\profile" ^
   --load-extension="%DIR%" ^
   --disable-extensions-except="%DIR%" ^
   --enable-gpu-rasterization ^
@@ -48,5 +43,3 @@ REM chạy Chromium
   --start-maximized ^
   --new-window ^
   "https://www.youtubekids.com"
-
-ENDLOCAL
