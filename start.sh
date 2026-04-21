@@ -1,5 +1,6 @@
 #!/bin/bash
 
+git pull
 sleep 1
 
 ARCH=$(uname -m)
@@ -62,13 +63,12 @@ killall "Chromium" 2>/dev/null || true
   --disable-component-update \
   --disable-domain-reliability \
   --no-pings \
-  --process-per-site \
   --js-flags="--max-old-space-size=512" \
   --autoplay-policy=no-user-gesture-required \
   --disable-infobars \
   --no-first-run \
   --no-default-browser-check \
   --disable-session-crashed-bubble \
+  --disable-features=SessionRestore \
   --start-maximized \
-  --new-window \
-  "https://www.youtubekids.com"
+  --app="https://www.youtubekids.com"

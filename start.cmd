@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+git pull
+
 REM ===== config =====
 set VERSION=147.0.7727.57
 
@@ -30,9 +32,8 @@ REM ===== download if missing =====
 if not exist "%APP%" (
     echo Downloading Chrome for Testing...
 
-    set URL=https://storage.googleapis.com/chrome-for-testing-public/%VERSION%/%PLATFORM%/chrome-%PLATFORM%.zip
 
-    powershell -Command "Invoke-WebRequest -Uri '%URL%' -OutFile '%ZIP%'"
+    powershell -Command "Invoke-WebRequest -Uri https://storage.googleapis.com/chrome-for-testing-public/%VERSION%/%PLATFORM%/chrome-%PLATFORM%.zip -OutFile '%ZIP%'"
 
     powershell -Command "Expand-Archive -Path '%ZIP%' -DestinationPath '%CFT_DIR%' -Force"
 
@@ -67,9 +68,10 @@ echo Starting Chrome for Testing...
   --metrics-recording-only ^
   --disable-component-update ^
   --no-first-run ^
+  --disable-infobars ^
   --no-default-browser-check ^
   --disable-session-crashed-bubble ^
+  --disable-features=SessionRestore ^
   --autoplay-policy=no-user-gesture-required ^
   --start-maximized ^
-  --new-window ^
-  "https://www.youtubekids.com"
+  --app="https://www.youtubekids.com"
