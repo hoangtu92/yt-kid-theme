@@ -156,8 +156,7 @@ function htmlToElement(html) {
  */
 function changeLanguage(lang){
 
-    localStorage.setItem("selected_language", lang);
-
+    chrome.storage.local.set({ selected_language: lang });
 
     document.querySelectorAll(".search-row").forEach(e => {
         e.style.display = "none";
@@ -170,10 +169,10 @@ function changeLanguage(lang){
  *
  * @returns {string}
  */
-function getLanguage(){
-
-    return localStorage.getItem("selected_language")  || 'en-US';
-
+function getLanguage(cb){
+    chrome.storage.local.get(["selected_language"], (result) => {
+        cb(result.selected_language || 'en-US');
+    });
 }
 
 function renderQuickSearchMenu() {
@@ -182,52 +181,46 @@ function renderQuickSearchMenu() {
     let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
     document.querySelector("#player-container-inner").append(playerOverlay);
 
-    container.innerHTML = '';
+    container.querySelectorAll(".search-row").forEach(e => e.parentNode.removeChild(e))
 
-    Object.entries(searchData).forEach(([lang, items], index) => {
-        const row = document.createElement('div');
-        row.className = 'search-row';
-        row.dataset.lang = lang;
-        row.style.display = lang === getLanguage() ? "block" : "none"
+    getLanguage(currentLang => {
+        Object.entries(searchData).forEach(([lang, items], index) => {
+            const row = document.createElement('div');
+            row.className = 'search-row';
+            row.dataset.lang = lang;
+            row.style.display = lang === currentLang ? "block" : "none"
 
-        const quick = document.createElement('div');
-        quick.className = 'quick-search';
+            const quick = document.createElement('div');
+            quick.className = 'quick-search';
 
-        items.forEach(item => {
+            items.forEach(item => {
 
-            let tagName = "a"
+                let tagName = "a"
 
-            if(item.action && item.action === "switchLanguage"){
-                tagName = "label";
-            }
+                const a = document.createElement(tagName);
+                a.href = '#';
+                a.className = 'search-item search-item-button';
+                a.dataset.search = item.keywords;
+                a.setAttribute("data-action", item.action)
 
-            const a = document.createElement(tagName);
-            a.href = '#';
-            a.className = 'search-item search-item-button';
-            a.dataset.search = item.keywords;
-            a.setAttribute("data-action", item.action)
+                if(item.targetLang){
+                    a.dataset.lang = item.targetLang
+                }
 
 
-            const img = document.createElement('img');
-            img.src = chrome.runtime.getURL(item.icon);
+                const img = document.createElement('img');
+                img.src = chrome.runtime.getURL(item.icon);
 
-            if(item.action && item.action === "switchLanguage"){
-                const input = document.createElement('input');
-                input.type = "radio";
-                input.name= "lang";
-                input.style.display = "none";
-                input.value = item.targetLang;
-                input.checked = item.targetLang === getLanguage()
-                a.appendChild(input);
-            }
+                a.appendChild(img);
+                quick.appendChild(a);
+            });
 
-            a.appendChild(img);
-            quick.appendChild(a);
+            row.appendChild(quick);
+            container.prepend(row);
         });
+    })
 
-        row.appendChild(quick);
-        container.appendChild(row);
-    });
+
 }
 
 /**

@@ -1,31 +1,35 @@
 window.addEventListener("load", function (e) {
     pingServiceWorker();
 
-    let lang = getLanguage();
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = lang;
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    getLanguage(lang => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = lang;
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
-    recognition.onresult = async (event) => {
-        const text = event.results[0][0].transcript;
-        await searchVideo(text);
-    };
+        recognition.onresult = async (event) => {
+            const text = event.results[0][0].transcript;
+            await searchVideo(text);
+        };
 
-    recognition.onerror = async (err) => {
-        console.error(err);
+        recognition.onerror = async (err) => {
+            console.error(err);
 
-        let lang = getLanguage();
-        await speak(translate[lang]["cannot_hear_you"], lang)
+            getLanguage(async lang => {
+                await speak(translate[lang]["cannot_hear_you"], lang)
 
-        await searchVideo(translate[lang]["default_search"])
+                await searchVideo(translate[lang]["default_search"])
+            });
 
-    };
 
-    // expose function so popup can trigger it
-    window.startVoiceSearch = () => {
-        recognition.start();
-    };
+        };
+
+        // expose function so popup can trigger it
+        window.startVoiceSearch = () => {
+            recognition.start();
+        };
+    });
+
 
 });
 
@@ -54,24 +58,6 @@ document.addEventListener('yt-playback-ended',  async (e) => {
     }
 }, true);
 
-/**
- * Language selection
- */
-document.addEventListener('click',  async (e) => {
-    pingServiceWorker();
-
-    if (e.target.name === "lang" && e.target.checked) {
-
-        let lang = e.target.value;
-
-        console.log(lang);
-
-        changeLanguage(lang)
-
-        await speak(translate[lang]["role_change"], lang)
-    }
-})
-
 
 document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
@@ -92,38 +78,50 @@ document.addEventListener("pointerdown", async function (e) {
 
     if(e.target.className.includes("search-item-button")){
 
-        if(e.target.getAttribute("data-action") === 'voiceRecognition'){
+        let video = document.querySelector("video.video-stream");
+        if(video) video.pause();
 
-            let video = document.querySelector("video.video-stream");
-            if(video) video.pause();
+        let action = e.target.getAttribute("data-action");
 
-            let lang = getLanguage();
-            await speak(translate[lang]["what_to_watch"], lang)
+        switch (action){
+            case "switchLanguage":
+                let lang = e.target.dataset.lang;
+                changeLanguage(lang)
 
-            startVoiceSearch()
+                await speak(translate[lang]["role_change"], lang)
+                break;
+            case "voiceRecognition":
+                getLanguage(async lang => {
+                    await speak(translate[lang]["what_to_watch"], lang)
+                });
+
+
+                startVoiceSearch()
+                break;
+            default:
+                let searchIcon = document.querySelector("#search-icon");
+                fillSearchResult(e);
+
+                const handler = (evt) => {
+                    document.removeEventListener('pointerup', handler);
+
+                    if(isTouchDevice()){
+                        triggerTouch(searchIcon, 'touchstart', evt);
+                        triggerTouch(searchIcon, 'touchend', evt);
+                    }
+                    else{
+                        setTimeout(() => {
+                            searchIcon.click()
+                        }, 0); // or 50ms if needed
+                    }
+
+                };
+
+                document.addEventListener('pointerup', handler);
+
+                break;
         }
-        else{
-            let searchIcon = document.querySelector("#search-icon");
-            fillSearchResult(e);
 
-            const handler = (evt) => {
-                document.removeEventListener('pointerup', handler);
-
-                if(isTouchDevice()){
-                    triggerTouch(searchIcon, 'touchstart', evt);
-                    triggerTouch(searchIcon, 'touchend', evt);
-                }
-                else{
-                    setTimeout(() => {
-                        searchIcon.click()
-                    }, 0); // or 50ms if needed
-                }
-
-            };
-
-            document.addEventListener('pointerup', handler);
-
-        }
 
     }
 

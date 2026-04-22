@@ -3,7 +3,7 @@
 set DIR=%~dp0
 set TARGET=%DIR%start.cmd
 set ICON=%DIR%youtube-kids.ico
-set SHORTCUT=%DIR%\YouTube Kids.lnk
+set SHORTCUT=%USERPROFILE%\Desktop\YouTube Kids.lnk
 
 powershell -Command ^
 $WshShell = New-Object -comObject WScript.Shell; ^

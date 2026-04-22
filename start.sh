@@ -38,7 +38,7 @@ if [ ! -f "$APP" ]; then
 fi
 
 # 👉 Fix macOS block
-xattr -dr com.apple.quarantine "$CHROMIUM_DIR" || true
+xattr -dr com.apple.quarantine "$APP" || true
 
 # 👉 2. Kill Chromium cũ (nếu có)
 killall "Chromium" 2>/dev/null || true

@@ -146,10 +146,10 @@ ytk-player{
     outline: 1px solid #d9053c;
 }
 
-.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related,
+/*.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related,
 #related-header.ytk-two-column-watch-next-results-renderer{
     display: none;
-}
+}*/
 @keyframes scroll-left {
     0% {
         transform: translateX(100%);
