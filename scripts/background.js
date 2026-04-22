@@ -9,7 +9,7 @@ function handleUrl(tabId, url) {
     if (!url || lastUrlMap[tabId] === url) return;
 
 
-    if (url.includes('search')) {
+    if (url.includes('search') && url.includes("youtubekids")) {
         lastUrlMap[tabId] = url;
         console.log('Search detected:', url);
         const parsedUrl = new URL(url);

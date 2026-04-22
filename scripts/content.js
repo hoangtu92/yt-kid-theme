@@ -9,9 +9,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             enterFullscreen();
             break;
         case "video_list":
-            getLanguage(async lang => {
-                await speak(`${translate[lang]["found_it"]}: ${message.speak}`, lang)
-            });
+            const lang = await getLanguage();
+
+            await speak(`${translate[lang]["found_it"]}: ${message.speak}`, lang)
 
             break;
 
