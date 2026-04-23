@@ -146,6 +146,127 @@ ytk-player{
     outline: 1px solid #d9053c;
 }
 
+
+.particle-loader-wrapper {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #171717;
+    overflow: hidden;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    z-index: 1;
+}
+
+#center-svg-container {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 999 !important;
+    pointer-events: none;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 200px !important;
+    height: 200px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#center-svg-container.ripple-effect::before,
+#center-svg-container.ripple-effect::after,
+.third-ripple-wave {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#center-svg-container.ripple-effect::before {
+    background-image:
+            radial-gradient(circle at 30% 30%, rgba(255, 179, 0, 0.8) 1px, transparent 1px),
+            radial-gradient(circle at 70% 70%, rgba(255, 179, 0, 0.6) 1px, transparent 1px);
+    background-size: 40px 40px, 35px 35px;
+    animation: rippleWave 3s infinite 0s;
+}
+
+#center-svg-container.ripple-effect::after {
+    background-image:
+            radial-gradient(circle at 30% 30%, rgba(255, 179, 0, 0.8) 1px, transparent 1px),
+            radial-gradient(circle at 70% 70%, rgba(255, 179, 0, 0.6) 1px, transparent 1px);
+    background-size: 40px 40px, 35px 35px;
+    animation: rippleWave 3s infinite 1s;
+}
+
+.third-ripple-wave {
+    background-image:
+            radial-gradient(circle at 60% 40%, rgba(255, 179, 0, 0.7) 1px, transparent 1px),
+            radial-gradient(circle at 40% 60%, rgba(255, 179, 0, 0.5) 1px, transparent 1px);
+    background-size: 45px 45px, 38px 38px;
+    animation: rippleWave 2.5s infinite 1.5s;
+}
+
+#center-svg-container svg {
+    width: 180px !important;
+    height: 180px !important;
+    opacity: 0.95;
+    transition: opacity 0.7s, transform 0.7s;
+    display: block !important;
+}
+
+.glow-fade {
+    animation: svgGlowFade 0.6s infinite alternate ease-in-out;
+    filter:
+            drop-shadow(0 0 24px #ff00cc) drop-shadow(0 0 48px #00ffe5) drop-shadow(0 0 72px #001aff);
+}
+
+@keyframes svgGlowFade {
+    0% {
+        opacity: 0.7;
+        filter: drop-shadow(0 0 12px #84005c88) drop-shadow(0 0 24px #00ffd488) drop-shadow(0 0 36px #a83aff44);
+    }
+
+    100% {
+        opacity: 1.0;
+        filter: drop-shadow(0 0 32px #ff00f2) drop-shadow(0 0 64px #00fbff) drop-shadow(0 0 96px #9000ff);
+    }
+}
+
+@keyframes rippleWave {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        background-size: 40px 40px, 35px 35px;
+    }
+
+    100% {
+        width: 600px;
+        height: 600px;
+        opacity: 0;
+        background-size: 80px 80px, 75px 75px;
+    }
+}
+
 /*.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related,
 #related-header.ytk-two-column-watch-next-results-renderer{
     display: none;

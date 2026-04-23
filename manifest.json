@@ -21,6 +21,7 @@
       "css": ["css/style.css"],
       "js": [
         "scripts/touch-emulator.js",
+        "scripts/three.min.js",
         "scripts/language.js",
         "scripts/search-data.js",
         "scripts/helper.js",

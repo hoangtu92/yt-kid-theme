@@ -1,6 +1,10 @@
 window.addEventListener("load", async function (e) {
     pingServiceWorker();
 
+    document.body.append(htmlToElement(`<div class="particle-loader-wrapper" style="display: none">
+        <canvas id="particle-canvas"></canvas>
+        <div id="center-svg-container"></div>
+    </div>`))
 
     let lang = await getLanguage();
 
@@ -25,6 +29,7 @@ window.addEventListener("load", async function (e) {
     }
     recognition.onend = function (e){
         recognition.starting = false;
+        document.querySelector(".particle-loader-wrapper").style.display = "none"
     }
 
     // expose function so popup can trigger it
@@ -34,10 +39,14 @@ window.addEventListener("load", async function (e) {
 
         if (!recognition.starting) {
 
+            init();
+
             await speak(translate[lang]["what_to_watch"], lang);
             setTimeout(() => {
                 recognition.start();
-            })
+            });
+
+
 
         } else {
             console.log("Recognition is still open")
