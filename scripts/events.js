@@ -6,12 +6,8 @@ window.addEventListener("load", async function (e) {
         <div id="center-svg-container"></div>
     </div>`))
 
-    let lang = await getLanguage();
-
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = lang;
-    recognition.continuous = false;
-    recognition.interimResults = false;
+
 
     recognition.onresult = async (event) => {
         const text = event.results[0][0].transcript;
@@ -29,6 +25,7 @@ window.addEventListener("load", async function (e) {
     }
     recognition.onend = function (e){
         recognition.starting = false;
+        destroy();
         document.querySelector(".particle-loader-wrapper").style.display = "none"
     }
 
@@ -36,13 +33,15 @@ window.addEventListener("load", async function (e) {
     window.startVoiceSearch = async () => {
 
         let lang = await getLanguage();
+        recognition.lang = lang;
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
         if (!recognition.starting) {
-
-            init();
-
+            await init();
             await speak(translate[lang]["what_to_watch"], lang);
             setTimeout(() => {
+
                 recognition.start();
             });
 

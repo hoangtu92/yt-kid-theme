@@ -30,15 +30,52 @@ const LAYERS = [
 const RADIUS = 2.2;
 let scene, camera, renderer, layers = [], mouse = { x: 0, y: 0 }, animationFrameId;
 let voiceLevel = 0;
+let textMesh;
+let textParticles;
 
-function init() {
+function createCanvas() {
+    // Remove old canvas if exists
+    const old = document.getElementById('particle-canvas');
+    if (old && old.parentNode) {
+        old.parentNode.removeChild(old);
+    }
+
+    // Create new canvas
+    const canvas = document.createElement('canvas');
+    canvas.id = 'particle-canvas';
+
+    // Find wrapper
+    const wrapper = document.querySelector('.particle-loader-wrapper');
+
+    if (!wrapper) {
+        console.warn('No .particle-loader-wrapper found');
+        document.body.appendChild(canvas); // fallback
+        return canvas;
+    }
+
+    // ✅ Prepend (insert as first child)
+    wrapper.prepend(canvas);
+
+    return canvas;
+}
+/**
+ *
+ * @returns {Promise<void>}
+ */
+async function init() {
     document.querySelector(".particle-loader-wrapper").style.display = "block"
-    const canvas = document.getElementById('particle-canvas');
+    const canvas = createCanvas();
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.z = 7;
 
-    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    textMesh = createTextMesh("LISTENING");
+    scene.add(textMesh);
+
+    textParticles = createTextParticles("AI");
+    scene.add(textParticles.mesh);
+
+    renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(0x000000, 0);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -56,12 +93,17 @@ function init() {
         const material = createParticleMaterial(settings, l);
         const points = new THREE.Points(geometry, material);
         scene.add(points);
-        layers.push({ points, uniforms: material.uniforms, settings });
+        layers.push({points, uniforms: material.uniforms, settings});
     }
 
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('mousemove', onMouseMove);
     setupSVG();
+    try {
+        await initAudio();   // 🎤 wait for mic permission
+    } catch (e) {
+        console.warn("Mic not available:", e);
+    }
     animate();
 }
 
@@ -209,7 +251,51 @@ function createTextTexture(text, color) {
     return new THREE.CanvasTexture(canvas);
 }
 
+function createTextTexture1(text) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 256;
+
+    const ctx = canvas.getContext('2d');
+
+    // Transparent background
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Text style
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 120px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Glow effect
+    ctx.shadowColor = '#00ffe5';
+    ctx.shadowBlur = 30;
+
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    return new THREE.CanvasTexture(canvas);
+}
+
+function createTextMesh(text) {
+    const texture = createTextTexture1(text);
+
+    const material = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(3, 0.8, 1); // adjust size
+
+    return sprite;
+}
+
 function animate() {
+
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
     animationFrameId = requestAnimationFrame(animate);
 
     const now = performance.now();
@@ -217,6 +303,19 @@ function animate() {
     // --- 1. Get voice energy (smooth it to avoid jitter) ---
     const rawLevel = getAudioLevel ? getAudioLevel() : 0;
     voiceLevel = voiceLevel * 0.85 + rawLevel * 0.15; // smoothing
+
+    if (textMesh) {
+        const scale = 1 + voiceLevel * 0.5;
+
+        textMesh.scale.set(3 * scale, 0.8 * scale, 1);
+
+        textMesh.material.opacity = 0.7 + voiceLevel * 0.8;
+
+        textMesh.position.z = 0.5 + voiceLevel; // slight pop forward
+    }
+
+    textParticles.material.uniforms.uTime.value += 0.016;
+    textParticles.material.uniforms.uVoice.value = voiceLevel;
 
     // --- 2. Loop layers ---
     for (let l = 0; l < layers.length; l++) {
@@ -337,6 +436,8 @@ function setupSVG() {
 let audioCtx, analyser, dataArray, micSource;
 
 async function initAudio() {
+    if (audioCtx && audioCtx.state !== 'closed') return;
+
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -358,4 +459,209 @@ function getAudioLevel() {
     }
 
     return sum / dataArray.length / 255; // normalize 0 → 1
+}
+function destroy() {
+    // --- 1. Stop animation loop ---
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+
+    // --- 2. Remove event listeners ---
+    window.removeEventListener('resize', onWindowResize);
+    window.removeEventListener('mousemove', onMouseMove);
+
+    // --- 3. Dispose all layers ---
+    layers.forEach(layer => {
+
+        // 🔢 Binary layer
+        if (layer.type === 'binary') {
+            const { binaryLayer } = layer;
+
+            binaryLayer.points.forEach(p => {
+                if (p.geometry) p.geometry.dispose();
+                if (p.material) {
+                    if (p.material.map) p.material.map.dispose();
+                    p.material.dispose();
+                }
+                scene.remove(p);
+            });
+
+            // 🌌 Normal particle layers
+        } else if (layer.points) {
+            if (layer.points.geometry) {
+                layer.points.geometry.dispose();
+            }
+
+            if (layer.points.material) {
+                layer.points.material.dispose();
+            }
+
+            scene.remove(layer.points);
+        }
+    });
+
+    layers = [];
+
+    // --- 4. Dispose renderer ---
+    if (renderer) {
+        renderer.dispose();
+
+        if (renderer.domElement && renderer.domElement.parentNode) {
+            renderer.domElement.parentNode.removeChild(renderer.domElement);
+        }
+
+        renderer = null;
+    }
+
+    // --- 5. Clear scene ---
+    if (scene) {
+        while (scene.children.length > 0) {
+            scene.remove(scene.children[0]);
+        }
+        scene = null;
+    }
+
+    // --- 6. Dispose camera ---
+    camera = null;
+
+    // --- 7. Stop audio (if used) ---
+    if (micSource) {
+        try {
+            micSource.disconnect();
+        } catch (e) {}
+        micSource = null;
+    }
+
+    if (analyser) {
+        try {
+            analyser.disconnect();
+        } catch (e) {}
+        analyser = null;
+    }
+
+    if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+    }
+
+    // --- 8. Reset state ---
+    dataArray = null;
+    voiceLevel = 0;
+    mouse = { x: 0, y: 0 };
+
+    // --- 9. Clear SVG container ---
+    const container = document.getElementById('center-svg-container');
+    if (container) {
+        container.innerHTML = '';
+    }
+
+    // --- 10. Optional: clear canvas ---
+    const canvas = document.getElementById('particle-canvas');
+    if (canvas) {
+        const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+        if (gl) {
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        }
+    }
+
+    scene = null;
+    camera = null;
+    renderer = null;
+    layers = [];
+    animationFrameId = null;
+}
+function getTextPoints(text) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const size = 300;
+    canvas.width = size;
+    canvas.height = size;
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 180px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, size / 2, size / 2);
+
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const points = [];
+
+    for (let y = 0; y < size; y += 3) {
+        for (let x = 0; x < size; x += 3) {
+            const i = (y * size + x) * 4;
+            const alpha = imageData.data[i + 3];
+
+            if (alpha > 128) {
+                points.push({
+                    x: (x - size / 2) / 100,
+                    y: -(y - size / 2) / 100
+                });
+            }
+        }
+    }
+
+    return points;
+}
+
+
+function createTextParticles(text) {
+    const points = getTextPoints(text);
+    const N = points.length;
+
+    const positions = new Float32Array(N * 3);
+    const randoms = new Float32Array(N);
+
+    for (let i = 0; i < N; i++) {
+        positions[i * 3] = points[i].x;
+        positions[i * 3 + 1] = points[i].y;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+
+        randoms[i] = Math.random();
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
+
+    const material = new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uVoice: { value: 0 }
+        },
+        vertexShader: `
+            attribute float aRandom;
+            uniform float uTime;
+            uniform float uVoice;
+
+            void main() {
+                vec3 pos = position;
+
+                // 🔥 Make text "fly" like your binary particles
+                float t = uTime * 0.5 + aRandom * 10.0;
+
+                pos.x += sin(t) * 0.2 * uVoice;
+                pos.y += cos(t) * 0.2 * uVoice;
+                pos.z += sin(t * 2.0) * 0.3;
+
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                gl_PointSize = 3.0 + uVoice * 10.0;
+            }
+        `,
+        fragmentShader: `
+            void main() {
+                float d = length(gl_PointCoord - vec2(0.5));
+                if (d > 0.5) discard;
+
+                gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);
+            }
+        `,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+
+    const pointsMesh = new THREE.Points(geometry, material);
+    return { mesh: pointsMesh, material };
 }
