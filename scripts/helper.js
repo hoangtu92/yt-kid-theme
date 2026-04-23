@@ -167,7 +167,7 @@ function changeLanguage(lang){
 
 /**
  *
- * @returns {string}
+ * @returns {Promise<unknown>}
  */
 const getLanguage = async () => {
 
@@ -179,13 +179,9 @@ const getLanguage = async () => {
 
 }
 
-async function renderQuickSearchMenu() {
+async function renderQuickSearchMenu(container ) {
+    //let container = document.querySelector(selector);
 
-    let container = document.querySelector("#secondary-results");
-    let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
-    document.querySelector("#player-container-inner").append(playerOverlay);
-
-    container.querySelectorAll(".search-row").forEach(e => e.parentNode.removeChild(e))
 
     let currentLang = await getLanguage();
     Object.entries(searchData).forEach(([lang, items], index) => {

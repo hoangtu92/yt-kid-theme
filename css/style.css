@@ -1,16 +1,14 @@
-#player-controller #player-controls-left, #player-fullscreen-button,
-/*
-.navigation-content.ytk-masthead,
-*/
+div#top-row.ytk-masthead{
+    padding: 0;
+}
+div.navigation-control-container.ytk-masthead, div.search-control-container.ytk-masthead,
+.fullscreen:not(.controls-visible) #masthead{
+    display: none !important;
+}
 
-.notice-content.ytk-masthead,
-
-/*#container.ytk-search-box,*/
-/*
-.navigation-control-container.ytk-masthead,
-*/
-.fullscreen #masthead
-{display: none !important;}
+#masthead.ytk-app{
+    min-height: 217px;
+}
 
 video, ytk-player{
     pointer-events: none;

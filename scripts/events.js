@@ -1,6 +1,7 @@
 window.addEventListener("load", async function (e) {
     pingServiceWorker();
 
+
     let lang = await getLanguage();
 
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -14,16 +15,33 @@ window.addEventListener("load", async function (e) {
     };
 
     recognition.onerror = async (err) => {
-        console.error(err);
-
         let lang = await getLanguage();
         await speak(translate[lang]["cannot_hear_you"], lang)
         await searchVideo(translate[lang]["default_search"])
-    };
+    }
+
+    recognition.onstart = function (e){
+        recognition.starting = true;
+    }
+    recognition.onend = function (e){
+        recognition.starting = false;
+    }
 
     // expose function so popup can trigger it
-    window.startVoiceSearch = () => {
-        recognition.start();
+    window.startVoiceSearch = async () => {
+
+        let lang = await getLanguage();
+
+        if (!recognition.starting) {
+
+            await speak(translate[lang]["what_to_watch"], lang);
+            setTimeout(() => {
+                recognition.start();
+            })
+
+        } else {
+            console.log("Recognition is still open")
+        }
     };
 
 
@@ -85,13 +103,10 @@ document.addEventListener("pointerdown", async function (e) {
                 let targetLang = e.target.dataset.lang;
                 changeLanguage(targetLang)
 
-                await speak(translate[targetLang]["role_change"], targetLang)
+                await speak(translate[targetLang]["language_change"], targetLang)
                 break;
             case "voiceRecognition":
-                let lang = await getLanguage();
-                await speak(translate[lang]["what_to_watch"], lang);
-
-                startVoiceSearch()
+                await startVoiceSearch()
                 break;
             default:
                 let searchIcon = document.querySelector("#search-icon");
