@@ -7,17 +7,19 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action) {
 
         case "video_ready":
+
+            container = document.querySelector("#secondary-results")
+            container.querySelectorAll(".search-row").forEach(e => e.parentNode.removeChild(e))
+
             document.body.classList.remove("controls-visible");
             if(!document.querySelector("#player-container-inner .player-overlay")){
                 let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
                 document.querySelector("#player-container-inner").append(playerOverlay);
             }
 
-
-            container = document.querySelector("#secondary-results")
-            container.querySelectorAll(".search-row").forEach(e => e.parentNode.removeChild(e))
-            await renderQuickSearchMenu(container);
             enterFullscreen();
+
+            await renderQuickSearchMenu(container);
 
             break;
         case "video_list":
@@ -35,10 +37,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 e.parentNode.removeChild(e)
             });
 
-            await renderQuickSearchMenu(container);
             const lang = await getLanguage();
-
             if(message.speak) await speak(`${message.speak}`, lang)
+
+            await renderQuickSearchMenu(container);
 
             break;
 

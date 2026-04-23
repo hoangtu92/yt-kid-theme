@@ -1,4 +1,3 @@
-let currentText = '';
 let recognition;
 window.addEventListener("load", async function (e) {
     pingServiceWorker();

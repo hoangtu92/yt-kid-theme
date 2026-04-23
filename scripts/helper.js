@@ -237,8 +237,6 @@ const getLanguage = async () => {
 }
 
 async function renderQuickSearchMenu(container ) {
-    //let container = document.querySelector(selector);
-
 
     let currentLang = await getLanguage();
     Object.entries(searchData).forEach(([lang, items], index) => {

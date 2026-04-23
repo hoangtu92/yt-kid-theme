@@ -286,6 +286,11 @@ function createTextTexture1(text) {
     return new THREE.CanvasTexture(canvas);
 }
 
+/**
+ *
+ * @param text
+ * @returns {Bo}
+ */
 function createTextMesh(text) {
     const texture = createTextTexture1(text);
 
@@ -301,6 +306,7 @@ function createTextMesh(text) {
 
     return sprite;
 }
+
 
 function animate() {
 
@@ -416,6 +422,9 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+/**
+ * Setup svg for canvas
+ */
 function setupSVG() {
     const container = document.getElementById('center-svg-container');
     container.innerHTML = AI_BRAIN_SVG_CONTENT;
@@ -442,6 +451,10 @@ function setupSVG() {
 
 let audioCtx, analyser, dataArray, micSource;
 
+/**
+ *
+ * @returns {Promise<void>}
+ */
 async function initAudio() {
     if (audioCtx && audioCtx.state !== 'closed') return;
 
@@ -457,6 +470,10 @@ async function initAudio() {
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
+/**
+ *
+ * @returns {number}
+ */
 function getAudioLevel() {
     analyser.getByteFrequencyData(dataArray);
 
@@ -467,6 +484,10 @@ function getAudioLevel() {
 
     return sum / dataArray.length / 255; // normalize 0 → 1
 }
+
+/**
+ * Destroy the canvas
+ */
 function destroy() {
     // --- 1. Stop animation loop ---
     if (animationFrameId) {
@@ -579,64 +600,3 @@ function destroy() {
     animationFrameId = null;
     document.querySelector(".particle-loader-wrapper").style.display = "none"
 }
-
-function createTextParticles(text) {
-    const points = getTextPoints(text);
-    const N = points.length;
-
-    const positions = new Float32Array(N * 3);
-    const randoms = new Float32Array(N);
-
-    for (let i = 0; i < N; i++) {
-        positions[i * 3] = points[i].x;
-        positions[i * 3 + 1] = points[i].y;
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-
-        randoms[i] = Math.random();
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
-
-    const material = new THREE.ShaderMaterial({
-        uniforms: {
-            uTime: { value: 0 },
-            uVoice: { value: 0 }
-        },
-        vertexShader: `
-            attribute float aRandom;
-            uniform float uTime;
-            uniform float uVoice;
-
-            void main() {
-                vec3 pos = position;
-
-                // 🔥 Make text "fly" like your binary particles
-                float t = uTime * 0.5 + aRandom * 10.0;
-
-                pos.x += sin(t) * 0.2 * uVoice;
-                pos.y += cos(t) * 0.2 * uVoice;
-                pos.z += sin(t * 2.0) * 0.3;
-
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-                gl_PointSize = 3.0 + uVoice * 10.0;
-            }
-        `,
-        fragmentShader: `
-            void main() {
-                float d = length(gl_PointCoord - vec2(0.5));
-                if (d > 0.5) discard;
-
-                gl_FragColor = vec4(0.0, 1.0, 1.0, 1.0);
-            }
-        `,
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-    });
-
-    const pointsMesh = new THREE.Points(geometry, material);
-    return { mesh: pointsMesh, material };
-}
-
