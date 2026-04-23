@@ -19,61 +19,15 @@ window.addEventListener("load", async function (e) {
             await init();
             await speak(translate[lang]["what_to_watch"], lang);
             setTimeout(() => {
-
                 recognition.start();
             });
-
-
 
         } else {
             console.log("Recognition is still open")
         }
     };
 
-
-
 });
-
-
-document.addEventListener('pointerdown',  async (e) => {
-    //video.currentTime += 20;
-    if(e.target.className.includes("player-overlay")){
-        toggleNav();
-    }
-
-});
-document.addEventListener('pause',  async (e) => {
-    if(e.target.tagName === "VIDEO"){
-        showNav();
-    }
-}, true);
-document.addEventListener('play',  async (e) => {
-    if(e.target.tagName === "VIDEO"){
-        hideNav();
-    }
-}, true);
-
-document.addEventListener('yt-playback-ended',  async (e) => {
-    if(e.target.tagName === "YTK-PLAYER"){
-        showNav();
-    }
-}, true);
-
-
-document.addEventListener("contextmenu", function (e) {
-    e.preventDefault();
-}, false);
-
-document.addEventListener('dblclick', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }, true //capturing phase!!
-);
-
-document.addEventListener('drag', function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-}, true);
 
 document.addEventListener("pointerdown", async function (e) {
 
@@ -125,3 +79,44 @@ document.addEventListener("pointerdown", async function (e) {
     }
 
 });
+
+
+document.addEventListener('pointerdown',  async (e) => {
+    //video.currentTime += 20;
+    if(e.target.className.includes("player-overlay")){
+        toggleNav();
+    }
+
+});
+document.addEventListener('pause',  async (e) => {
+    if(e.target.tagName === "VIDEO"){
+        showNav();
+    }
+}, true);
+document.addEventListener('play',  async (e) => {
+    if(e.target.tagName === "VIDEO"){
+        hideNav();
+    }
+}, true);
+
+document.addEventListener('yt-playback-ended',  async (e) => {
+    if(e.target.tagName === "YTK-PLAYER"){
+        showNav();
+    }
+}, true);
+
+
+document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+}, false);
+
+document.addEventListener('dblclick', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }, true //capturing phase!!
+);
+
+document.addEventListener('drag', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+}, true);

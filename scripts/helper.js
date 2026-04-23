@@ -172,8 +172,8 @@ async function initRecognition() {
     let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
     recognition.lang = lang;
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.interimResults = false;
 
     recognition.onresult = async (event) => {
         const text = event.results[0][0].transcript;
