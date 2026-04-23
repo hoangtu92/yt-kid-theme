@@ -1,3 +1,4 @@
+let currentText = '';
 window.addEventListener("load", async function (e) {
     pingServiceWorker();
 
@@ -11,12 +12,19 @@ window.addEventListener("load", async function (e) {
 
     recognition.onresult = async (event) => {
         const text = event.results[0][0].transcript;
+
+        // Only update if text actually changed
+        if (text !== currentText) {
+            currentText = text;
+            updateText(currentText)
+        }
+
         await searchVideo(text);
     };
 
     recognition.onerror = async (err) => {
         let lang = await getLanguage();
-        await speak(translate[lang]["cannot_hear_you"], lang)
+        await speak(translate[lang]["cannot_hear_you"], lang);
         await searchVideo(translate[lang]["default_search"])
     }
 

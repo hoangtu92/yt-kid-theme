@@ -30,13 +30,18 @@ chrome.webRequest.onCompleted.addListener(function(request) {
 
             if(pos_tab){
                 let eventName = "";
+                let msg = "";
                 if(request.url.includes("api/stats/playback")){
                     eventName = "video_ready"
+                }
+                if(request.url.includes("browse")){
+                    eventName = "video_list"
+                    msg = "Youtube kids"
                 }
 
                 if(eventName){
 
-                    chrome.tabs.sendMessage(pos_tab.id, {action: eventName, request: request}, function (response){
+                    chrome.tabs.sendMessage(pos_tab.id, {action: eventName, request: request, speak: msg}, function (response){
                         console.log(response)
                     });
                 }
@@ -47,6 +52,7 @@ chrome.webRequest.onCompleted.addListener(function(request) {
     {urls: ["*://*.youtubekids.com/*"]},
     ["responseHeaders"]
 );
+
 
 // normal load
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -64,6 +70,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
 chrome.webNavigation.onReferenceFragmentUpdated.addListener((details) => {
     handleUrl(details.tabId, details.url);
 });
+
 
 
 /**

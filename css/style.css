@@ -1,13 +1,23 @@
 div#top-row.ytk-masthead{
-    padding: 0;
+    padding: 0 !important;
 }
 div.navigation-control-container.ytk-masthead, div.search-control-container.ytk-masthead,
-.fullscreen:not(.controls-visible) #masthead{
+.fullscreen:not(.controls-visible) #masthead,
+.style-scope.ytk-masthead .center-control-container{
     display: none !important;
 }
 
 #masthead.ytk-app{
-    min-height: 217px;
+    min-height: 160px !important;
+    padding-bottom: 8px !important;
+}
+
+ytk-masthead[ui-mode=INLINE] #top-row.ytk-masthead {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .24) !important;
+}
+
+ytk-masthead {
+    --ytk-masthead-two-row-with-text-height: 150px !important;
 }
 
 video, ytk-player{

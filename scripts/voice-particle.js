@@ -31,7 +31,6 @@ const RADIUS = 2.2;
 let scene, camera, renderer, layers = [], mouse = { x: 0, y: 0 }, animationFrameId;
 let voiceLevel = 0;
 let textMesh;
-let textParticles;
 
 function createCanvas() {
     // Remove old canvas if exists
@@ -58,6 +57,20 @@ function createCanvas() {
 
     return canvas;
 }
+
+function updateText(text) {
+    if (!textMesh) return;
+
+    const newTexture = createTextTexture1(text);
+
+    // 🔥 dispose old texture to avoid memory leak
+    if (textMesh.material.map) {
+        textMesh.material.map.dispose();
+    }
+
+    textMesh.material.map = newTexture;
+    textMesh.material.needsUpdate = true;
+}
 /**
  *
  * @returns {Promise<void>}
@@ -71,9 +84,6 @@ async function init() {
 
     textMesh = createTextMesh("LISTENING");
     scene.add(textMesh);
-
-    textParticles = createTextParticles("AI");
-    scene.add(textParticles.mesh);
 
     renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -98,7 +108,7 @@ async function init() {
 
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('mousemove', onMouseMove);
-    setupSVG();
+    //setupSVG();
     try {
         await initAudio();   // 🎤 wait for mic permission
     } catch (e) {
@@ -313,9 +323,6 @@ function animate() {
 
         textMesh.position.z = 0.5 + voiceLevel; // slight pop forward
     }
-
-    textParticles.material.uniforms.uTime.value += 0.016;
-    textParticles.material.uniforms.uVoice.value = voiceLevel;
 
     // --- 2. Loop layers ---
     for (let l = 0; l < layers.length; l++) {
@@ -571,40 +578,6 @@ function destroy() {
     layers = [];
     animationFrameId = null;
 }
-function getTextPoints(text) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    const size = 300;
-    canvas.width = size;
-    canvas.height = size;
-
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 180px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, size / 2, size / 2);
-
-    const imageData = ctx.getImageData(0, 0, size, size);
-    const points = [];
-
-    for (let y = 0; y < size; y += 3) {
-        for (let x = 0; x < size; x += 3) {
-            const i = (y * size + x) * 4;
-            const alpha = imageData.data[i + 3];
-
-            if (alpha > 128) {
-                points.push({
-                    x: (x - size / 2) / 100,
-                    y: -(y - size / 2) / 100
-                });
-            }
-        }
-    }
-
-    return points;
-}
-
 
 function createTextParticles(text) {
     const points = getTextPoints(text);
@@ -665,3 +638,4 @@ function createTextParticles(text) {
     const pointsMesh = new THREE.Points(geometry, material);
     return { mesh: pointsMesh, material };
 }
+
