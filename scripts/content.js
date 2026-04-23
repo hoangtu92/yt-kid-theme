@@ -23,9 +23,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
             break;
         case "video_list":
+            document.body.classList.add("controls-visible");
 
             container = document.querySelector("#masthead .ytk-masthead")
-            await renderQuickSearchMenu(container);
 
             container.querySelectorAll(".navigation-control-container").forEach(e => {
                 e.parentNode.removeChild(e)
@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 e.parentNode.removeChild(e)
             });
 
-            document.body.classList.add("controls-visible");
+            await renderQuickSearchMenu(container);
 
             const lang = await getLanguage();
             if(message.speak) await speak(`${message.speak}`, lang)
