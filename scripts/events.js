@@ -1,4 +1,5 @@
 let currentText = '';
+let recognition;
 window.addEventListener("load", async function (e) {
     pingServiceWorker();
 
@@ -7,43 +8,12 @@ window.addEventListener("load", async function (e) {
         <div id="center-svg-container"></div>
     </div>`))
 
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-
-
-    recognition.onresult = async (event) => {
-        const text = event.results[0][0].transcript;
-
-        // Only update if text actually changed
-        if (text !== currentText) {
-            currentText = text;
-            updateText(currentText)
-        }
-
-        await searchVideo(text);
-    };
-
-    recognition.onerror = async (err) => {
-        let lang = await getLanguage();
-        await speak(translate[lang]["cannot_hear_you"], lang);
-        await searchVideo(translate[lang]["default_search"])
-    }
-
-    recognition.onstart = function (e){
-        recognition.starting = true;
-    }
-    recognition.onend = function (e){
-        recognition.starting = false;
-        destroy();
-        document.querySelector(".particle-loader-wrapper").style.display = "none"
-    }
+    recognition = await initRecognition()
 
     // expose function so popup can trigger it
     window.startVoiceSearch = async () => {
 
         let lang = await getLanguage();
-        recognition.lang = lang;
-        recognition.continuous = false;
-        recognition.interimResults = false;
 
         if (!recognition.starting) {
             await init();
@@ -117,7 +87,10 @@ document.addEventListener("pointerdown", async function (e) {
         switch (action){
             case "switchLanguage":
                 let targetLang = e.target.dataset.lang;
-                changeLanguage(targetLang)
+                changeLanguage(targetLang);
+
+
+                recognition = await initRecognition(); // new instance
 
                 await speak(translate[targetLang]["language_change"], targetLang)
                 break;

@@ -166,6 +166,45 @@ function changeLanguage(lang){
     });
 }
 
+async function initRecognition() {
+
+    let lang = await getLanguage();
+    let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    recognition.lang = lang;
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = async (event) => {
+        const text = event.results[0][0].transcript;
+
+        // Only update if text actually changed
+        if (text !== currentText) {
+            currentText = text;
+            updateText(currentText)
+        }
+
+        await searchVideo(text);
+    };
+
+    recognition.onerror = async (err) => {
+        let lang = await getLanguage();
+        await speak(translate[lang]["cannot_hear_you"], lang);
+        await searchVideo(translate[lang]["default_search"])
+    }
+
+    recognition.onstart = function (e){
+        recognition.starting = true;
+    }
+    recognition.onend = function (e){
+        recognition.starting = false;
+        destroy();
+        document.querySelector(".particle-loader-wrapper").style.display = "none"
+    }
+
+    return recognition;
+}
+
 /**
  *
  * @returns {Promise<unknown>}
