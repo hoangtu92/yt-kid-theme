@@ -379,7 +379,7 @@ function animate() {
             const s = layer.settings;
 
             // Time speeds up slightly with voice
-            u.uTime.value += 0.016 + voiceLevel * 0.05;
+            u.uTime.value += 0.016 + voiceLevel * 0.5;
 
             // Rotation reacts to voice (more energy → faster spin)
             u.uRotation.value += s.rotationSpeed * (1.0 + voiceLevel * 3.0);
@@ -388,17 +388,17 @@ function animate() {
             u.uMouse.value.set(mouse.x, mouse.y);
 
             // 🔥 Voice-driven effects
-            u.uTurbulence.value = s.turbulence + voiceLevel * 2.5;
-            u.uScatter.value = s.scatterSize + voiceLevel * 1.2;
-            u.uBrightness.value = s.brightness + voiceLevel * 4.0;
+            u.uTurbulence.value = s.turbulence + voiceLevel * 5;
+            u.uScatter.value = s.scatterSize + voiceLevel * 2;
+            u.uBrightness.value = s.brightness + voiceLevel * 8;
 
             // Ripple reacts to voice rhythm
             if (u.uRipple) {
-                u.uRippleSpeed.value = s.rippleSpeed + voiceLevel * 4.0;
+                u.uRippleSpeed.value = s.rippleSpeed + voiceLevel * 7;
             }
 
             // Optional: make collisions stronger when loud
-            u.uCollision.value = s.collisionStrength + voiceLevel * 1.5;
+            u.uCollision.value = s.collisionStrength + voiceLevel * 4;
         }
     }
 
