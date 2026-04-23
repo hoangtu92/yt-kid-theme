@@ -318,7 +318,7 @@ function animate() {
 
     // --- 1. Get voice energy (smooth it to avoid jitter) ---
     const rawLevel = getAudioLevel ? getAudioLevel() : 0;
-    voiceLevel = voiceLevel * 0.85 + rawLevel * 0.15; // smoothing
+    voiceLevel = voiceLevel * 0.85 + rawLevel * 0.5; // smoothing
     //voiceLevel = Math.abs(Math.sin(performance.now() * 0.003));
 
     if (textMesh) {
