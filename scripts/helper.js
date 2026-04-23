@@ -191,7 +191,7 @@ async function initRecognition() {
 
         // 🔥 LIVE text (updates while speaking)
         if (interim) {
-            updateText(interim);
+            updateText(interim + " " + voiceLevel);
         }
 
         // ✅ FINAL text (stable)
