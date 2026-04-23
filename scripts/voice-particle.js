@@ -263,7 +263,7 @@ function createTextTexture(text, color) {
 
 function createTextTexture1(text) {
     const canvas = document.createElement('canvas');
-    canvas.width = 1024;
+    canvas.width = document.body.clientWidth;
     canvas.height = 256;
 
     const ctx = canvas.getContext('2d');
@@ -577,6 +577,7 @@ function destroy() {
     renderer = null;
     layers = [];
     animationFrameId = null;
+    document.querySelector(".particle-loader-wrapper").style.display = "none"
 }
 
 function createTextParticles(text) {

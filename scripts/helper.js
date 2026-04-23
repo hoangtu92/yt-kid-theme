@@ -173,22 +173,38 @@ async function initRecognition() {
 
     recognition.lang = lang;
     recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.interimResults = true;
 
     recognition.onresult = async (event) => {
-        const text = event.results[0][0].transcript;
+        let interim = '';
+        let final = '';
 
-        // Only update if text actually changed
-        if (text !== currentText) {
-            currentText = text;
-            updateText(currentText)
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+
+            if (event.results[i].isFinal) {
+                final += transcript;
+            } else {
+                interim += transcript;
+            }
         }
-        await speak(text, lang)
-        await searchVideo(text);
+
+        // 🔥 LIVE text (updates while speaking)
+        if (interim) {
+            updateText(interim);
+        }
+
+        // ✅ FINAL text (stable)
+        if (final) {
+            updateText(final);
+        }
+        await speak(final, lang)
+        await searchVideo(final);
     };
 
     recognition.onerror = async (err) => {
         let lang = await getLanguage();
+        updateText(translate[lang]["cannot_hear_you"])
         await speak(translate[lang]["cannot_hear_you"], lang);
         await searchVideo(translate[lang]["default_search"])
     }
@@ -198,8 +214,9 @@ async function initRecognition() {
     }
     recognition.onend = function (e){
         recognition.starting = false;
-        destroy();
-        document.querySelector(".particle-loader-wrapper").style.display = "none"
+        setTimeout(() => {
+            destroy();
+        }, 2000)
     }
 
     return recognition;
