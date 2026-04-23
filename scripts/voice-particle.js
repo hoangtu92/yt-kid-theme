@@ -319,15 +319,14 @@ function animate() {
     // --- 1. Get voice energy (smooth it to avoid jitter) ---
     const rawLevel = getAudioLevel ? getAudioLevel() : 0;
     voiceLevel = voiceLevel * 0.85 + rawLevel * 0.15; // smoothing
+    //voiceLevel = Math.abs(Math.sin(performance.now() * 0.003));
 
     if (textMesh) {
-        const scale = 1 + voiceLevel * 0.5;
+        const scale = 1 + voiceLevel * 2;
 
         textMesh.scale.set(3 * scale, 0.8 * scale, 1);
-
-        textMesh.material.opacity = 0.7 + voiceLevel * 0.8;
-
-        textMesh.position.z = 0.5 + voiceLevel; // slight pop forward
+        textMesh.material.opacity = 0.6 + voiceLevel * 1.5;
+        textMesh.position.z = 0.5 + voiceLevel * 2.0;
     }
 
     // --- 2. Loop layers ---
