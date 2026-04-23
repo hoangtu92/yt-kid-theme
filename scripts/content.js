@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             await renderQuickSearchMenu(container);
             const lang = await getLanguage();
 
-            await speak(`${message.speak}`, lang)
+            if(message.speak) await speak(`${message.speak}`, lang)
 
             break;
 

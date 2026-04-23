@@ -13,7 +13,7 @@ function handleUrl(tabId, url) {
         lastUrlMap[tabId] = url;
         console.log('Search detected:', url);
         const parsedUrl = new URL(url);
-        chrome.tabs.sendMessage(pos_tab.id, {action: "video_list",  speak: parsedUrl.searchParams.get('q')}, function (response){
+        chrome.tabs.sendMessage(pos_tab.id, {action: "video_list"}, function (response){
             console.log(response)
         });
     }

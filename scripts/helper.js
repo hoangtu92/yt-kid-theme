@@ -183,7 +183,7 @@ async function initRecognition() {
             currentText = text;
             updateText(currentText)
         }
-
+        await speak(text, lang)
         await searchVideo(text);
     };
 
