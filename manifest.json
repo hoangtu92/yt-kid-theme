@@ -25,6 +25,7 @@
         "scripts/language.js",
         "scripts/search-data.js",
         "scripts/helper.js",
+        "scripts/voice-particle.js",
         "scripts/events.js",
         "scripts/content.js"
 
