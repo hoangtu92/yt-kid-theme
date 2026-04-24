@@ -1,51 +1,5 @@
 /**
  *
- * @param text
- * @param currentLang
- * @returns {Promise<unknown>}
- */
-function speak(text, currentLang) {
-    return new Promise((resolve, reject) => {
-        const voices = window.speechSynthesis.getVoices();
-        const voice = voices.find(v => v.lang === currentLang);
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = currentLang; // or 'vi-VN'
-        utterance.voice = voice;
-
-        speechSynthesis.speak(utterance);
-
-        utterance.onend = resolve;
-        utterance.onerror = reject;
-    })
-}
-
-/**
- *
- * @param text
- * @returns {Promise<void>}
- */
-async function searchVideo(text) {
-    let searchIcon = document.querySelector("#search-icon");
-    let input = document.querySelector("input.style-scope.ytk-search-box")
-    if (input) {
-        input.value = text;
-        searchIcon.click();
-    }
-}
-
-/**
- *
- * @param e
- */
-function fillSearchResult(e) {
-    let text = e.target.getAttribute("data-search");
-    if (text) {
-        document.querySelector("input.style-scope.ytk-search-box").value = text;
-    }
-}
-
-/**
- *
  * @returns {boolean}
  */
 function isTouchDevice() {
@@ -89,199 +43,20 @@ function triggerTouch(eventTarget, eventName, mouseEv) {
     eventTarget.dispatchEvent(touchEvent);
 }
 
-/**
- *
- */
-const enterFullscreen = function (){
-    document.body.classList.add("fullscreen");
-    document.body.classList.remove("search-mode");
-    window.dispatchEvent(new Event('resize'));
 
-}
 
-/**
- *
- * @param nav
- */
-function hideNav(nav = null){
-    if(!nav) nav = document.querySelector("#secondary-results");
-    if(nav){
-        nav.style.display = "none";
-        document.body.classList.remove("search-mode");
-    }
-
-}
-
-/**
- *
- * @param nav
- */
-function showNav(nav = null){
-    if(!nav) nav = document.querySelector("#secondary-results");
-    if(nav){
-        nav.style.display = "block";
-        document.body.classList.add("search-mode");
-    }
-}
-/**
- *
- * @param e
- */
-const toggleNav = function (e) {
-    let nav = document.querySelector("#secondary-results");
-    if(nav){
-        if (nav.style.display === "block") {
-            hideNav(nav)
-        } else {
-            showNav(nav);
-        }
-    }
-}
-
-/**
- *
- * @param html
- * @returns {ChildNode}
- */
-function htmlToElement(html) {
-    let template = document.createElement('template');
-    html = html.trim(); // Never return a text node of whitespace as the result
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
 
 /**
  *
  * @param lang
  */
 function changeLanguage(lang){
-
     chrome.storage.local.set({ selected_language: lang });
-
-    document.querySelectorAll(".search-row").forEach(e => {
-        e.style.display = "none";
-    });
-    document.querySelectorAll(`.search-row[data-lang="${lang}"]`).forEach(e => {
-        e.style.display = "block";
-    });
 }
 
 
 function delay(ms) {
     return new Promise(r => setTimeout(r, ms));
-}
-
-function waitForEndSafe(timeout = 1000) {
-    return new Promise((resolve) => {
-        let done = false;
-
-        const timer = setTimeout(() => {
-            if (!done) {
-                done = true;
-                resolve();
-            }
-        }, timeout);
-
-        recognition.addEventListener("end", function handler() {
-            if (done) return;
-
-            done = true;
-            clearTimeout(timer);
-            recognition.removeEventListener("end", handler);
-            resolve();
-        });
-    });
-}
-
-async function handleFinalResult(text) {
-    const lang = await getLanguage();
-
-    // 👉 luôn sync lang trước khi start lại
-    recognition.lang = lang;
-
-    // 👉 dừng mic trước
-    if (isRunning) {
-        recognition.abort();
-        await delay(200);
-    }
-
-    await speak(text, lang);
-
-    // 👉 delay để mic không ăn TTS
-    await delay(400);
-
-    await searchVideo(text);
-}
-
-async function initRecognition() {
-
-    if(recognition) return;
-
-    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-
-    recognition.continuous = false;
-    recognition.interimResults = true;
-
-    recognition.onstart = function (e){
-        isRunning = true;
-        isStarting = false;
-    }
-    recognition.onend = function (e){
-        isRunning = false;
-        isStarting = false;
-
-        setTimeout(() => {
-            destroyParticles();
-        }, 2000)
-    }
-
-    recognition.onresult = async (event) => {
-        let interim = '';
-        let final = '';
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-
-            if (event.results[i].isFinal) {
-                final += transcript;
-            } else {
-                interim += transcript;
-            }
-        }
-
-        // 🔥 LIVE text (updates while speaking)
-        if (interim) {
-            updateText(interim);
-        }
-
-        // ✅ FINAL text (stable)
-        if (final) {
-            updateText(final);
-
-            await handleFinalResult(final);
-        }
-
-    };
-
-    recognition.onerror = async (err) => {
-
-        if (isRunning) {
-            recognition.abort();
-            await delay(200);
-        }
-
-        const lang = await getLanguage();
-
-        const fallback = translate[lang]["default_search"];
-
-        updateText(fallback);
-
-        await speak(translate[lang]["cannot_hear_you"], lang);
-
-        await delay(400);
-
-        await searchVideo(fallback);
-    }
 }
 
 /**
@@ -295,47 +70,6 @@ const getLanguage = async () => {
             resolve(res.selected_language || 'en-US');
         });
     });
-
-}
-
-async function renderQuickSearchMenu(container ) {
-
-    let currentLang = await getLanguage();
-    Object.entries(searchData).forEach(([lang, items], index) => {
-        const row = document.createElement('div');
-        row.className = 'search-row';
-        row.dataset.lang = lang;
-        row.style.display = lang === currentLang ? "block" : "none"
-
-        const quick = document.createElement('div');
-        quick.className = 'quick-search';
-
-        items.forEach(item => {
-
-            let tagName = "a"
-
-            const a = document.createElement(tagName);
-            a.href = '#';
-            a.className = 'search-item search-item-button';
-            a.dataset.search = item.keywords;
-            a.setAttribute("data-action", item.action)
-
-            if (item.targetLang) {
-                a.dataset.lang = item.targetLang
-            }
-
-
-            const img = document.createElement('img');
-            img.src = chrome.runtime.getURL(item.icon);
-
-            a.appendChild(img);
-            quick.appendChild(a);
-        });
-
-        row.appendChild(quick);
-        container.prepend(row);
-    });
-
 
 }
 

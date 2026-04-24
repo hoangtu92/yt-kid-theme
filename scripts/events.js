@@ -6,35 +6,6 @@ window.addEventListener("load", async function (e) {
         <div id="center-svg-container"></div>
     </div>`))
 
-    // expose function so popup can trigger it
-    window.startVoiceSearch = async () => {
-        await initRecognition();
-
-        // 👉 nếu đang chạy → abort
-        if (isRunning || isStarting) {
-            recognition.abort();
-            await waitForEndSafe();
-        }
-
-        let lang = await getLanguage();
-
-        await initParticle();
-
-        await speak(translate[lang]["what_to_watch"], lang);
-
-        await delay(400); // 🔥 fix miss voice
-
-        recognition.lang = lang;
-
-        try {
-            isStarting = true;
-            recognition.start();
-        } catch (e) {
-            isStarting = false;
-            console.warn("Start failed:", e);
-        }
-    };
-
 });
 
 document.addEventListener("pointerdown", async function (e) {
@@ -51,14 +22,19 @@ document.addEventListener("pointerdown", async function (e) {
                 let targetLang = e.target.dataset.lang;
                 changeLanguage(targetLang);
 
-                await speak(translate[targetLang]["language_change"], targetLang)
+                await updateMenu();
+
+                await speak(translate[targetLang]["language_change"], targetLang);
+
                 break;
             case "voiceRecognition":
                 await startVoiceSearch()
                 break;
             default:
-                let searchIcon = document.querySelector("#search-icon");
+
                 fillSearchResult(e);
+
+                let searchIcon = document.querySelector("#search-icon");
 
                 const handler = (evt) => {
                     document.removeEventListener('pointerup', handler);
@@ -118,7 +94,7 @@ document.addEventListener("contextmenu", function (e) {
 document.addEventListener('dblclick', function (event) {
         event.preventDefault();
         event.stopPropagation();
-    }, true //capturing phase!!
+    }, true
 );
 
 document.addEventListener('drag', function (event) {

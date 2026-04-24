@@ -488,6 +488,10 @@ function getAudioLevel() {
  * Destroy the canvas
  */
 function destroyParticles() {
+
+    document.querySelector(".particle-loader-wrapper").style.display = "none";
+
+
     // --- 1. Stop animation loop ---
     if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
@@ -597,5 +601,4 @@ function destroyParticles() {
     renderer = null;
     layers = [];
     animationFrameId = null;
-    document.querySelector(".particle-loader-wrapper").style.display = "none"
 }

@@ -10,43 +10,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch (message.action) {
 
         case "video_ready":
-
-            container = document.querySelector("#secondary-results")
-            container.querySelectorAll(".search-row").forEach(e => e.parentNode.removeChild(e))
-
-            document.body.classList.remove("controls-visible");
-            if(!document.querySelector("#player-container-inner .player-overlay")){
-                let playerOverlay = htmlToElement(`<div class="player-overlay"></div>`);
-                document.querySelector("#player-container-inner").append(playerOverlay);
-            }
-
-            enterFullscreen();
-
+            container = document.querySelector("#secondary-results");
             await renderQuickSearchMenu(container);
-
+            enterVideoMode();
             break;
         case "video_list":
-            document.body.classList.add("controls-visible");
-
-            container = document.querySelector("#masthead .ytk-masthead")
-
-            container.querySelectorAll(".navigation-control-container").forEach(e => {
-                e.parentNode.removeChild(e)
-            });
-            container.querySelectorAll(".notice-content").forEach(e => {
-                e.parentNode.removeChild(e)
-            });
-            container.querySelectorAll(".search-row").forEach(e => {
-                e.parentNode.removeChild(e)
-            });
-
+            container = document.querySelector("#masthead .ytk-masthead");
             await renderQuickSearchMenu(container);
-
+            exitVideoMode();
             const lang = await getLanguage();
             if(message.speak) await speak(`${message.speak}`, lang)
-
             break;
-
     }
+
     sendResponse("Content: ", message.action + " Ok");
 });

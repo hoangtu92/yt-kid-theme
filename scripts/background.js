@@ -31,7 +31,6 @@ chrome.webRequest.onCompleted.addListener(function(request) {
                 }
                 if(request.url.includes("browse")){
                     eventName = "video_list"
-                    msg = "Youtube kids"
                 }
 
                 if(eventName){

@@ -24,8 +24,11 @@
         "scripts/three.min.js",
         "scripts/language.js",
         "scripts/search-data.js",
+
         "scripts/helper.js",
-        "scripts/voice-particle.js",
+        "scripts/dom.js",
+        "scripts/voice.js",
+        "scripts/particles.js",
         "scripts/events.js",
         "scripts/content.js"
 
