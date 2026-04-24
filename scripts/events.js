@@ -1,4 +1,3 @@
-let recognition;
 window.addEventListener("load", async function (e) {
     pingServiceWorker();
 
@@ -7,20 +6,32 @@ window.addEventListener("load", async function (e) {
         <div id="center-svg-container"></div>
     </div>`))
 
-    await initRecognition()
-
     // expose function so popup can trigger it
     window.startVoiceSearch = async () => {
-        if(recognition) recognition.abort();
-        if (!recognition.starting) {
-            let lang = await getLanguage();
-            await init();
-            await speak(translate[lang]["what_to_watch"], lang);
-            recognition.lang = lang;
-            recognition.start();
+        await initRecognition();
 
-        } else {
-            console.log("Recognition is still open")
+        // 👉 nếu đang chạy → abort
+        if (isRunning || isStarting) {
+            recognition.abort();
+            await waitForEndSafe();
+        }
+
+        let lang = await getLanguage();
+
+        await initParticle();
+
+        await speak(translate[lang]["what_to_watch"], lang);
+
+        await delay(400); // 🔥 fix miss voice
+
+        recognition.lang = lang;
+
+        try {
+            isStarting = true;
+            recognition.start();
+        } catch (e) {
+            isStarting = false;
+            console.warn("Start failed:", e);
         }
     };
 
@@ -39,16 +50,6 @@ document.addEventListener("pointerdown", async function (e) {
             case "switchLanguage":
                 let targetLang = e.target.dataset.lang;
                 changeLanguage(targetLang);
-
-
-                await initRecognition(); // new instance
-
-                if (recognition.starting) {
-                    recognition.abort(); // mạnh hơn stop()
-                    await waitForEnd();
-                }
-
-                recognition.lang = targetLang;
 
                 await speak(translate[targetLang]["language_change"], targetLang)
                 break;

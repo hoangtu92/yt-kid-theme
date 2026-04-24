@@ -75,7 +75,7 @@ function updateText(text) {
  *
  * @returns {Promise<void>}
  */
-async function init() {
+async function initParticle() {
     document.querySelector(".particle-loader-wrapper").style.display = "block"
     const canvas = createCanvas();
     scene = new THREE.Scene();
@@ -487,7 +487,7 @@ function getAudioLevel() {
 /**
  * Destroy the canvas
  */
-function destroy() {
+function destroyParticles() {
     // --- 1. Stop animation loop ---
     if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);

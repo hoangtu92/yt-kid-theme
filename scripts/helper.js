@@ -166,26 +166,74 @@ function changeLanguage(lang){
     });
 }
 
-function waitForEnd() {
-    return new Promise(resolve => {
-        const handler = () => {
+
+function delay(ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
+
+function waitForEndSafe(timeout = 1000) {
+    return new Promise((resolve) => {
+        let done = false;
+
+        const timer = setTimeout(() => {
+            if (!done) {
+                done = true;
+                resolve();
+            }
+        }, timeout);
+
+        recognition.addEventListener("end", function handler() {
+            if (done) return;
+
+            done = true;
+            clearTimeout(timer);
             recognition.removeEventListener("end", handler);
             resolve();
-        };
-        recognition.addEventListener("end", handler);
+        });
     });
+}
+
+async function handleFinalResult(text) {
+    const lang = await getLanguage();
+
+    // 👉 luôn sync lang trước khi start lại
+    recognition.lang = lang;
+
+    // 👉 dừng mic trước
+    if (isRunning) {
+        recognition.abort();
+        await delay(200);
+    }
+
+    await speak(text, lang);
+
+    // 👉 delay để mic không ăn TTS
+    await delay(400);
+
+    await searchVideo(text);
 }
 
 async function initRecognition() {
 
     if(recognition) return;
 
-    let lang = await getLanguage();
     recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
-    recognition.lang = lang;
     recognition.continuous = false;
     recognition.interimResults = true;
+
+    recognition.onstart = function (e){
+        isRunning = true;
+        isStarting = false;
+    }
+    recognition.onend = function (e){
+        isRunning = false;
+        isStarting = false;
+
+        setTimeout(() => {
+            destroyParticles();
+        }, 2000)
+    }
 
     recognition.onresult = async (event) => {
         let interim = '';
@@ -209,26 +257,30 @@ async function initRecognition() {
         // ✅ FINAL text (stable)
         if (final) {
             updateText(final);
+
+            await handleFinalResult(final);
         }
-        await speak(final, lang)
-        await searchVideo(final);
+
     };
 
     recognition.onerror = async (err) => {
-        let lang = await getLanguage();
-        updateText(translate[lang]["default_search"])
-        await speak(translate[lang]["cannot_hear_you"], lang);
-        await searchVideo(translate[lang]["default_search"])
-    }
 
-    recognition.audiostart = function (e){
-        recognition.starting = true;
-    }
-    recognition.onend = function (e){
-        recognition.starting = false;
-        setTimeout(() => {
-            destroy();
-        }, 2000)
+        if (isRunning) {
+            recognition.abort();
+            await delay(200);
+        }
+
+        const lang = await getLanguage();
+
+        const fallback = translate[lang]["default_search"];
+
+        updateText(fallback);
+
+        await speak(translate[lang]["cannot_hear_you"], lang);
+
+        await delay(400);
+
+        await searchVideo(fallback);
     }
 }
 

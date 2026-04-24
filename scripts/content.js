@@ -1,3 +1,6 @@
+let recognition;
+let isRunning = false;
+let isStarting = false;
 /**
  * Listen to background event message
  */
