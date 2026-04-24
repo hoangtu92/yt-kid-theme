@@ -216,12 +216,12 @@ async function initRecognition() {
 
     recognition.onerror = async (err) => {
         let lang = await getLanguage();
-        updateText(translate[lang]["cannot_hear_you"])
+        updateText(translate[lang]["default_search"])
         await speak(translate[lang]["cannot_hear_you"], lang);
         await searchVideo(translate[lang]["default_search"])
     }
 
-    recognition.onstart = function (e){
+    recognition.audiostart = function (e){
         recognition.starting = true;
     }
     recognition.onend = function (e){

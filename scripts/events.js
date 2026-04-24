@@ -11,11 +11,12 @@ window.addEventListener("load", async function (e) {
 
     // expose function so popup can trigger it
     window.startVoiceSearch = async () => {
-        if(recognition) recognition.stop();
+        if(recognition) recognition.abort();
         if (!recognition.starting) {
             let lang = await getLanguage();
             await init();
             await speak(translate[lang]["what_to_watch"], lang);
+            recognition.lang = lang;
             recognition.start();
 
         } else {
