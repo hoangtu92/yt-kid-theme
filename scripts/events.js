@@ -7,11 +7,11 @@ window.addEventListener("load", async function (e) {
         <div id="center-svg-container"></div>
     </div>`))
 
-    recognition = await initRecognition()
+    await initRecognition()
 
     // expose function so popup can trigger it
     window.startVoiceSearch = async () => {
-
+        if(recognition) recognition.stop();
         if (!recognition.starting) {
             let lang = await getLanguage();
             await init();
@@ -40,7 +40,14 @@ document.addEventListener("pointerdown", async function (e) {
                 changeLanguage(targetLang);
 
 
-                recognition = await initRecognition(); // new instance
+                await initRecognition(); // new instance
+
+                if (recognition.starting) {
+                    recognition.abort(); // mạnh hơn stop()
+                    await waitForEnd();
+                }
+
+                recognition.lang = targetLang;
 
                 await speak(translate[targetLang]["language_change"], targetLang)
                 break;

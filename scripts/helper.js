@@ -166,10 +166,22 @@ function changeLanguage(lang){
     });
 }
 
+function waitForEnd() {
+    return new Promise(resolve => {
+        const handler = () => {
+            recognition.removeEventListener("end", handler);
+            resolve();
+        };
+        recognition.addEventListener("end", handler);
+    });
+}
+
 async function initRecognition() {
 
+    if(recognition) return;
+
     let lang = await getLanguage();
-    let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
     recognition.lang = lang;
     recognition.continuous = false;
@@ -218,8 +230,6 @@ async function initRecognition() {
             destroy();
         }, 2000)
     }
-
-    return recognition;
 }
 
 /**
