@@ -19,7 +19,7 @@ ROOT="$(cd "$DIR/../.." && pwd)"
 cd "$ROOT" || exit 1
 
 # 🔥 update project
-git pull
+git pull origin probuild
 
 PROFILE_DIR="$ROOT/runtime/profile"
 EXTENSION_DIR="$ROOT/dist"

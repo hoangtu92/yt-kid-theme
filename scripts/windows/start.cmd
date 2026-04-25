@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-git pull
+git pull origin probuild
 
 REM ===== config =====
 set VERSION=147.0.7727.57

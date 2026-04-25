@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "./scripts/macos/start.sh",
-    "build": "rollup -c & ./scripts/macos/install.sh",
+    "mac:build": "NODE_ENV=production rollup -c & ./scripts/macos/install.sh",
+    "win:build": "NODE_ENV=production rollup -c & ./scripts/windows/install.bat",
     "prod": "NODE_ENV=production rollup -c"
   },
   "devDependencies": {
