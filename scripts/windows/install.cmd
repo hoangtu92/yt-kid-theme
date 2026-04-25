@@ -17,4 +17,4 @@ $Shortcut.IconLocation = '%ICON%'; ^
 $Shortcut.Save()
 
 echo Shortcut created on Desktop
-pause
+
