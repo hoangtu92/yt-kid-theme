@@ -47,12 +47,12 @@ cp "$ICON_PATH" "$APP_PATH/Contents/Resources/youtube-kids.icns"
 
 echo "App created at: $APP_PATH"
 
-echo "Installing app..."
+#echo "Installing app..."
 
-sudo rm -rf "/Applications/$APP_NAME.app"
-sudo cp -R "$APP_PATH" /Applications/
-sudo xattr -dr com.apple.quarantine "/Applications/$APP_NAME.app"
+#sudo rm -rf "/Applications/$APP_NAME.app"
+#sudo cp -R "$APP_PATH" /Applications/
+#sudo xattr -dr com.apple.quarantine "/Applications/$APP_NAME.app"
 
-rm -rf "$APP_PATH"
+#rm -rf "$APP_PATH"
 
-echo "Installed to /Applications"
+#echo "Installed to /Applications"

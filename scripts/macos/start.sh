@@ -21,6 +21,8 @@ cd "$ROOT" || exit 1
 # 🔥 update project
 git pull origin probuild
 
+npm run mac:build
+
 PROFILE_DIR="$ROOT/runtime/profile"
 EXTENSION_DIR="$ROOT/dist"
 
