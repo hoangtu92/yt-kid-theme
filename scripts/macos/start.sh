@@ -1,8 +1,5 @@
 #!/bin/bash
 
-git pull
-sleep 1
-
 ARCH=$(uname -m)
 
 if [ "$ARCH" = "arm64" ]; then
@@ -15,7 +12,19 @@ echo "Detected architecture: $ARCH → $PLATFORM"
 
 # directory of this script
 DIR="$(cd "$(dirname "$0")" && pwd)"
-CFT_DIR="$DIR/chrome-for-testing"
+ROOT="$(cd "$DIR/../.." && pwd)"
+
+
+# go to project root
+cd "$ROOT" || exit 1
+
+# 🔥 update project
+git pull
+
+PROFILE_DIR="$ROOT/runtime/profile"
+EXTENSION_DIR="$ROOT/dist"
+
+CFT_DIR="$ROOT/runtime/chrome-for-testing"
 APP="$CFT_DIR/chrome-$PLATFORM/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
 ZIP="$CFT_DIR/chrome.zip"
 
@@ -43,12 +52,13 @@ xattr -dr com.apple.quarantine "$APP" || true
 # 👉 2. Kill Chromium cũ (nếu có)
 killall "Chromium" 2>/dev/null || true
 
+
 # 👉 4. Run Chromium kiosk + extension
 "$APP" \
   --kiosk \
-  --user-data-dir="$DIR/profile" \
-  --load-extension="$DIR" \
-  --disable-extensions-except="$DIR" \
+  --user-data-dir="$PROFILE_DIR" \
+  --load-extension="$EXTENSION_DIR" \
+  --disable-extensions-except="$EXTENSION_DIR" \
   --enable-gpu-rasterization \
   --enable-zero-copy \
   --ignore-gpu-blocklist \

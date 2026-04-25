@@ -1,6 +1,20 @@
 {
   "name": "youtube-kid-theme",
   "version": "1.0.0",
+  "scripts": {
+    "start": "./scripts/macos/start.sh",
+    "build": "rollup -c",
+    "prod": "NODE_ENV=production rollup -c"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "rollup": "^4.60.2",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-delete": "^3.0.2"
+  },
   "dependencies": {
+    "three": "^0.184.0"
   }
 }

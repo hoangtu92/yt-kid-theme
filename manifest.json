@@ -4,10 +4,10 @@
   "version": "1.0",
   "description": "Yt kid theme",
   "icons": {
-    "16": "img/justdog_16.webp",
-    "32": "img/justdog_16.webp",
-    "48": "img/justdog_16.webp",
-    "128": "img/justdog_16.webp"
+    "16": "assets/img/justdog_16.webp",
+    "32": "assets/img/justdog_16.webp",
+    "48": "assets/img/justdog_16.webp",
+    "128": "assets/img/justdog_16.webp"
   },
   "permissions": [
     "webRequest", "tabs", "activeTab", "scripting", "webNavigation", "storage"
@@ -18,29 +18,18 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtubekids.com/*"],
-      "css": ["css/style.css"],
+      "css": ["assets/css/style.css"],
       "js": [
-        "scripts/touch-emulator.js",
-        "scripts/three.min.js",
-        "scripts/language.js",
-        "scripts/search-data.js",
-
-        "scripts/helper.js",
-        "scripts/dom.js",
-        "scripts/voice.js",
-        "scripts/particles.js",
-        "scripts/events.js",
-        "scripts/content.js"
-
+        "content.js"
       ]
     }
   ],
   "web_accessible_resources": [{
     "matches": ["<all_urls>"],
-    "resources": ["img/*"]
+    "resources": ["assets/img/*"]
   }],
   "background": {
-    "service_worker": "scripts/background.js",
+    "service_worker": "service-worker.js",
     "type": "module"
   }
 }

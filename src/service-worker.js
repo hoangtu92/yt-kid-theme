@@ -66,15 +66,9 @@ chrome.webNavigation.onReferenceFragmentUpdated.addListener((details) => {
 });
 
 
-
-/**
- * On receiving message from content script
- */
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        console.log("Receive content script msg: ", request);
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.type === "PING") {
         pos_tab = sender.tab;
-        sendResponse("Service Worker: Okie dookie!!");
-        return true;
+        sendResponse({ ok: true, time: Date.now() });
     }
-);
+});

@@ -1,5 +1,5 @@
 .idea
-profile
-chrome-for-testing
-YouTube Kids.app
-*.lnk
+/runtime
+/dist/*
+package-lock.json
+node_modules

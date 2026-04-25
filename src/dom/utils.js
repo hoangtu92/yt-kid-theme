@@ -2,7 +2,7 @@
  *
  * @returns {boolean}
  */
-function isTouchDevice() {
+export function isTouchDevice() {
     return (('ontouchstart' in window) ||
         (navigator.maxTouchPoints > 0) ||
         (navigator.msMaxTouchPoints > 0));
@@ -14,7 +14,7 @@ function isTouchDevice() {
  * @param eventName
  * @param mouseEv
  */
-function triggerTouch(eventTarget, eventName, mouseEv) {
+export function triggerTouch(eventTarget, eventName, mouseEv) {
     let touches = [];
     if(mouseEv.clientX){
         touches =  [new Touch({
@@ -44,41 +44,6 @@ function triggerTouch(eventTarget, eventName, mouseEv) {
 }
 
 
-
-
-/**
- *
- * @param lang
- */
-function changeLanguage(lang){
-    chrome.storage.local.set({ selected_language: lang });
-}
-
-
-function delay(ms) {
+export function delay(ms) {
     return new Promise(r => setTimeout(r, ms));
-}
-
-/**
- *
- * @returns {Promise<unknown>}
- */
-const getLanguage = async () => {
-
-    return new Promise(resolve => {
-        chrome.storage.local.get(["selected_language"], (res) => {
-            resolve(res.selected_language || 'en-US');
-        });
-    });
-
-}
-
-/**
- * Send to background
- */
-
-function pingServiceWorker() {
-    chrome.runtime.sendMessage("ContentJS: Wake up baby", function (response) {
-        console.log(response);
-    });
 }
