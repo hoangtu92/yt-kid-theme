@@ -3,14 +3,15 @@
 import { on } from "../core/bus.js";
 import {startRecognition, stopRecognition} from "../voice/recognition.js";
 import { emit } from "../core/bus.js";
+import {speak_i18n} from "../services/speech";
 
 export function initVoiceActions() {
 
     on("action:voiceRecognition", async () => {
 
         emit("ui:particle:start");
-        emit("ui:speak_i18n", "what_to_watch");
 
+        await speak_i18n("what_to_watch")
         await startRecognition();
     });
 
