@@ -1,5 +1,5 @@
 export default {
-    what_to_watch: "What do you want to watch?",
+    what_to_watch: "I'm listen",
     language_change: "English time",
     found_it: "Wow, I found it!",
     cannot_hear_you: "I can't hear you",
