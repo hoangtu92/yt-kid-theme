@@ -1,8 +1,11 @@
 @echo off
 
 set DIR=%~dp0
+
+for %%i in ("%DIR%\..\..") do set "ROOT=%%~fi"
+
 set TARGET=%DIR%start.cmd
-set ICON=%DIR%youtube-kids.ico
+set ICON=%ROOT%\assets\icons\youtube-kids.ico
 set SHORTCUT=%USERPROFILE%\Desktop\YouTube Kids.lnk
 
 powershell -Command ^

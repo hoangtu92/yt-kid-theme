@@ -8,8 +8,13 @@ set VERSION=147.0.7727.57
 
 REM ===== paths =====
 set "DIR=%~dp0"
+REM remove trailing slash
 set "DIR=%DIR:~0,-1%"
-set "CFT_DIR=%DIR%\chrome-for-testing"
+
+REM go up from scripts\windows → scripts → ROOT
+for %%i in ("%DIR%\..\..") do set "ROOT=%%~fi"
+
+set "CFT_DIR=%ROOT%\runtime\chrome-for-testing"
 set "ZIP=%CFT_DIR%\chrome.zip"
 
 REM ===== detect 32/64 =====
@@ -53,9 +58,9 @@ echo Starting Chrome for Testing...
 
 "%APP%" ^
   --kiosk ^
-  --user-data-dir="%DIR%\profile" ^
-  --load-extension="%DIR%" ^
-  --disable-extensions-except="%DIR%" ^
+  --user-data-dir="%ROOT%\runtime\profile" ^
+  --load-extension="%ROOT\dist%" ^
+  --disable-extensions-except="%ROOT\dist%" ^
   --use-angle=d3d11 ^
   --enable-gpu ^
   --ignore-gpu-blocklist ^

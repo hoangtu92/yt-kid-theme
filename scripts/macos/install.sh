@@ -1,10 +1,11 @@
 #!/bin/bash
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$DIR/../.." && pwd)"
 
 APP_NAME="YouTube Kids"
-APP_PATH="$DIR/$APP_NAME.app"
-ICON_PATH="$DIR/youtube-kids.icns"
+APP_PATH="$ROOT/$APP_NAME.app"
+ICON_PATH="$ROOT/assets/icons/youtube-kids.icns"
 
 mkdir -p "$APP_PATH/Contents/MacOS"
 mkdir -p "$APP_PATH/Contents/Resources"
