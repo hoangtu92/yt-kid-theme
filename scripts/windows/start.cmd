@@ -3,7 +3,7 @@ setlocal
 
 git pull origin probuild
 
-npm run win:build
+call npm run win:build
 
 REM ===== config =====
 set VERSION=147.0.7727.57
