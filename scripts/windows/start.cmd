@@ -59,8 +59,8 @@ echo Starting Chrome for Testing...
 "%APP%" ^
   --kiosk ^
   --user-data-dir="%ROOT%\runtime\profile" ^
-  --load-extension="%ROOT\dist%" ^
-  --disable-extensions-except="%ROOT\dist%" ^
+  --load-extension="%ROOT%\dist" ^
+  --disable-extensions-except="%ROOT%\dist" ^
   --use-angle=d3d11 ^
   --enable-gpu ^
   --ignore-gpu-blocklist ^
