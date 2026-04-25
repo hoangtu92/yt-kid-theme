@@ -41,7 +41,7 @@ export default [
     },
 
     // 👉 Service worker (MV3)
-    {
+   /* {
         input: 'src/service-worker.js',
         output: {
             file: 'dist/service-worker.js',
@@ -49,5 +49,5 @@ export default [
             sourcemap: !isProd
         },
         plugins: basePlugins
-    }
+    }*/
 ];

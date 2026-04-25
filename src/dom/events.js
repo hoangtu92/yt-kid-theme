@@ -4,10 +4,21 @@ import { emit } from "../core/bus.js";
 
 export function initDomEvents() {
 
-    // 🔥 APP LOAD
-    window.addEventListener("load", () => {
+    document.addEventListener("yt-search-box-update", (e) => {
+        emit("ui:speak", e.detail.query);
+    });
 
+    document.addEventListener("ytk-page-updated", (e) => {
+        const params = new URL(window.location.href);
 
+        switch(params.pathname){
+            case "/watch":
+                emit("video:ready", e);
+                break;
+            default:
+                emit("video:list", e);
+                break;
+        }
     });
 
 
@@ -29,18 +40,26 @@ export function initDomEvents() {
     document.addEventListener("pause", (e) => {
         if (e.target.tagName === "VIDEO") {
             emit("media:paused");
+            const params = new URL(window.location.href);
+            if(params.pathname === "/watch")
+                emit("action:voiceRecognition")
         }
     }, true);
 
     document.addEventListener("play", (e) => {
         if (e.target.tagName === "VIDEO") {
             emit("media:play");
+            emit("action:stopRecognition")
         }
     }, true);
 
     document.addEventListener("yt-playback-ended", (e) => {
         if (e.target.tagName === "YTK-PLAYER") {
             emit("media:ended");
+
+            const params = new URL(window.location.href);
+            if(params.pathname === "/watch")
+                emit("action:voiceRecognition")
         }
     }, true);
 

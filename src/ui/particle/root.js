@@ -1,6 +1,7 @@
 import createAudioSystem from "./audio";
 import createEngine from "./engine";
 import {destroyLayers} from "./layers";
+import {animate} from "./renderer";
 
 export function initParticleRoot(canvas) {
 
@@ -8,13 +9,21 @@ export function initParticleRoot(canvas) {
     const audio = createAudioSystem();
     const engine = createEngine(ctx, audio);
 
-    engine.init(canvas);
+    async function bootstrap() {
+
+        engine.init(canvas);        // subscribe to audio events
+
+        await audio.init();   // starts emitting audio:level
+
+        engine.start();       // optional lifecycle flag
+        animate(ctx);            // 🔥 start render loop here
+    }
 
     return {
         ctx,
         engine,
         audio,
-
+        bootstrap,
         destroy() {
             audio.destroy?.();
             engine.destroy();

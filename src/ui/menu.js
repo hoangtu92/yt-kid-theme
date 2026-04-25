@@ -8,7 +8,7 @@ import { searchPresets } from "../core/presets/search.js";
  * Render menu (build DOM once)
  */
 export async function renderQuickSearchMenu(container) {
-    container.querySelectorAll(".search-row").forEach(e => e.remove());
+    container.querySelectorAll(".search-row").forEach(e => e.parentNode.removeChild(e));
 
     const { speech: currentLang } = await getLang();
 

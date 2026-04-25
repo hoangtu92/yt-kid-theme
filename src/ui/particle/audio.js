@@ -1,3 +1,5 @@
+import {emit} from "../../core/bus";
+
 export default function createAudioSystem() {
 
     let audioCtx;
@@ -6,18 +8,20 @@ export default function createAudioSystem() {
     let dataArray;
 
     async function init() {
+        await initMic();
+        startLoop();
+    }
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
+    async function initMic() {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-        audioCtx = new AudioContext();
+        const ctx = new AudioContext();
+        const source = ctx.createMediaStreamSource(stream);
 
-        analyser = audioCtx.createAnalyser();
+        analyser = ctx.createAnalyser();
         analyser.fftSize = 256;
 
-        mic = audioCtx.createMediaStreamSource(stream);
-        mic.connect(analyser);
+        source.connect(analyser);
 
         dataArray = new Uint8Array(analyser.frequencyBinCount);
     }
@@ -34,6 +38,19 @@ export default function createAudioSystem() {
         }
 
         return (sum / dataArray.length) / 255;
+    }
+
+    function startLoop() {
+        const tick = () => {
+
+            let level = getLevel();
+
+            emit("audio:level", level);
+
+            requestAnimationFrame(tick);
+        };
+
+        tick();
     }
 
     function destroy() {

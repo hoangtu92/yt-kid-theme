@@ -1,23 +1,22 @@
 // src/actions/voice.js
 
 import { on } from "../core/bus.js";
-import { startRecognition } from "../voice/recognition.js";
-import { speak_i18n } from "../services/speech.js";
+import {startRecognition, stopRecognition} from "../voice/recognition.js";
 import { emit } from "../core/bus.js";
-import {delay} from "../dom/utils";
 
 export function initVoiceActions() {
 
     on("action:voiceRecognition", async () => {
+
         emit("ui:particle:start");
-
-        await speak_i18n("what_to_watch");
-
-        // small delay still OK (UX reason)
-        await delay(100);
+        emit("ui:speak_i18n", "what_to_watch");
 
         await startRecognition();
     });
+
+    on("action:stopRecognition", async () => {
+        await stopRecognition()
+    })
 
     on("voice:interim", (text) => {
         emit("ui:text:update", text);
@@ -29,8 +28,7 @@ export function initVoiceActions() {
     });
 
     on("voice:error",  () => {
-        emit("ui:speak", "cannot_hear_you");
-        emit("intent:search", "default_search");
+        emit("ui:speak_i18n", "cannot_hear_you");
     });
 
     on("voice:end", () => {

@@ -10,7 +10,7 @@
     "128": "assets/img/justdog_16.webp"
   },
   "permissions": [
-    "webRequest", "tabs", "activeTab", "scripting", "webNavigation", "storage"
+    "storage"
   ],
   "host_permissions": [
     "*://www.youtubekids.com/*"
@@ -27,9 +27,5 @@
   "web_accessible_resources": [{
     "matches": ["<all_urls>"],
     "resources": ["assets/img/*"]
-  }],
-  "background": {
-    "service_worker": "service-worker.js",
-    "type": "module"
-  }
+  }]
 }

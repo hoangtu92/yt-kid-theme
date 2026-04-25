@@ -2,8 +2,6 @@
 
 import { on } from "../core/bus.js";
 import {enterVideoMode, exitVideoMode, pauseVideo} from "../dom/videoMode.js";
-import { speak } from "../services/speech.js";
-import {getLang} from "../core/config";
 
 export function initVideoActions() {
 
@@ -15,12 +13,7 @@ export function initVideoActions() {
         enterVideoMode();
     });
 
-    on("video:list", async (message) => {
+    on("video:list", async () => {
         exitVideoMode();
-
-        if (message.speak) {
-            let lang = await getLang();
-            await speak(message.speak, lang.speech);
-        }
     });
 }

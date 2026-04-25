@@ -3,7 +3,8 @@ div#top-row.ytk-masthead{
 }
 div.navigation-control-container.ytk-masthead, div.search-control-container.ytk-masthead,
 .fullscreen:not(.controls-visible) #masthead,
-.style-scope.ytk-masthead .center-control-container{
+.style-scope.ytk-masthead .center-control-container,
+#video-info{
     display: none !important;
 }
 

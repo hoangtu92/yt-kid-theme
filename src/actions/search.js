@@ -1,6 +1,6 @@
 // src/actions/search.js
 
-import { on } from "../core/bus.js";
+import {emit, on} from "../core/bus.js";
 import { isTouchDevice, triggerTouch} from "../dom/utils";
 import {getLang} from "../core/config";
 import {getLanguagePack} from "../core/i18n";
@@ -44,7 +44,6 @@ export function initSearchAction() {
     on("intent:search", async (text) => {
         if (!text) return;
 
-        console.log("Search for: ", text)
         lastQuery = text;
 
         if (text === "default_search") {
@@ -52,6 +51,8 @@ export function initSearchAction() {
             let languagePack = getLanguagePack(lang.speech);
             text = languagePack[text];
         }
+
+        emit("ui:speak", text);
 
         performSearch(text);
 

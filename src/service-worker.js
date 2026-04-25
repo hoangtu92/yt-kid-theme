@@ -29,7 +29,7 @@ chrome.webRequest.onCompleted.addListener(function(request) {
                 if(request.url.includes("api/stats/playback")){
                     eventName = "video_ready"
                 }
-                if(request.url.includes("browse")){
+                if(request.url.includes("browse") || request.url.includes("search")){
                     eventName = "video_list"
                 }
 
@@ -49,6 +49,7 @@ chrome.webRequest.onCompleted.addListener(function(request) {
 
 
 // normal load
+/*
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete') {
         handleUrl(tabId, tab.url);
@@ -64,6 +65,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
 chrome.webNavigation.onReferenceFragmentUpdated.addListener((details) => {
     handleUrl(details.tabId, details.url);
 });
+*/
 
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
