@@ -13,7 +13,6 @@ export function initVoiceActions() {
         emit("ui:particle:start");
 
         await speak_i18n("what_to_watch");
-        await delay(400)
         await startRecognition();
     });
 
