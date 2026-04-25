@@ -4,6 +4,7 @@ import { on } from "../core/bus.js";
 import {startRecognition, stopRecognition} from "../voice/recognition.js";
 import { emit } from "../core/bus.js";
 import {speak_i18n} from "../services/speech";
+import {delay} from "../dom/utils";
 
 export function initVoiceActions() {
 
@@ -11,7 +12,8 @@ export function initVoiceActions() {
 
         emit("ui:particle:start");
 
-        await speak_i18n("what_to_watch")
+        await speak_i18n("what_to_watch");
+        await delay(400)
         await startRecognition();
     });
 
