@@ -4,7 +4,7 @@
   "scripts": {
     "start": "./scripts/macos/start.sh",
     "mac:build": "NODE_ENV=production rollup -c && ./scripts/macos/install.sh",
-    "win:build": "rollup -c && ./scripts/windows/install.bat",
+    "win:build": "rollup -c && call scripts\\windows\\install.cmd",
     "prod": "NODE_ENV=production rollup -c"
   },
   "devDependencies": {

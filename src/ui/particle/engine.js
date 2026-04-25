@@ -42,6 +42,8 @@ export default function createEngine(ctx, audio) {
         ctx.layers = layers;
         ctx.textMesh = textMesh;
 
+        audio.init();
+
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("resize", onWindowResize);
 
@@ -153,9 +155,9 @@ export default function createEngine(ctx, audio) {
 
                 u.uMouse.value.set(mouse.x, mouse.y);
 
-                u.uTurbulence.value = s.turbulence + level * 5;
-                u.uScatter.value = s.scatterSize + level * 5;
-                u.uBrightness.value = s.brightness + level * 5;
+                u.uTurbulence.value = s.turbulence + level * 3;
+                u.uScatter.value = s.scatterSize + level * 3;
+                u.uBrightness.value = s.brightness + level * 10;
 
                 if (u.uRipple) {
                     u.uRippleSpeed.value = s.rippleSpeed + level * 5;

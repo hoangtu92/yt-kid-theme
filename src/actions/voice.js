@@ -14,7 +14,7 @@ export function initVoiceActions() {
         await speak_i18n("what_to_watch");
 
         // small delay still OK (UX reason)
-        await delay(400);
+        await delay(100);
 
         await startRecognition();
     });
