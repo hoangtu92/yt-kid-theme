@@ -34,16 +34,16 @@ export function animate(ctx) {
             for (let j = 0; j < settings.particleCount; j++) {
 
                 binaryLayer.radii[j] +=
-                    (settings.outwardSpeed + level * 2.0) * 0.01;
+                    (settings.outwardSpeed + level) * 0.01;
 
-                if (binaryLayer.radii[j] > 3.5 + level * 2.0) {
+                if (binaryLayer.radii[j] > 3.5 + level) {
                     binaryLayer.radii[j] = 0;
                 }
 
                 const ripple = settings.ripple
                     ? Math.sin(
                     now * 0.001 *
-                    (settings.rippleSpeed + level * 3.0) +
+                    (settings.rippleSpeed + level) +
                     binaryLayer.angles[j] * 4.0
                 ) * (0.5 + level)
                     : 0;
