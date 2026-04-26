@@ -70,18 +70,6 @@ export function initDomEvents() {
         e.stopPropagation();
     }, true);
 
-    document.addEventListener("gesturestart", e => {
-        e.preventDefault();
-        e.stopPropagation();
-    });
-    document.addEventListener("gesturechange", e => {
-        e.stopPropagation();
-        e.preventDefault()
-    });
-    document.addEventListener("gestureend", e => {
-        e.stopPropagation();
-        e.preventDefault()
-    });
 
     window.addEventListener("wheel", (e) => {
         if (e.ctrlKey) {
