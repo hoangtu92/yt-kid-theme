@@ -1,7 +1,14 @@
-// src/actions/video.js
+// src/actions/video.action.js
 
 import { on } from "../core/bus.js";
-import {enterVideoMode, exitVideoMode, pauseVideo, playVideo} from "../dom/videoMode.js";
+import {
+    ensureAutoPlay,
+    enterVideoMode,
+    exitVideoMode,
+    pauseVideo,
+    playFirstVideo,
+    playVideo
+} from "../ui/dom/video.dom.js";
 
 export function initVideoActions() {
 
@@ -20,4 +27,12 @@ export function initVideoActions() {
     on("video:list", async () => {
         exitVideoMode();
     });
+
+    on("video:list", () => {
+        playFirstVideo();
+    });
+
+    on("ui:pointerup", () => {
+        ensureAutoPlay();
+    })
 }

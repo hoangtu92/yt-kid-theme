@@ -28,7 +28,7 @@ const buildSetup = [
 export default [
     // 👉 Content script
     {
-        input: 'src/content/index.js',
+        input: 'src/index.js',
         output: {
             file: 'dist/content.js',
             format: 'iife',
@@ -39,15 +39,4 @@ export default [
             ...basePlugins
         ]
     },
-
-    // 👉 Service worker (MV3)
-   /* {
-        input: 'src/service-worker.js',
-        output: {
-            file: 'dist/service-worker.js',
-            format: 'es', // 🔥 REQUIRED
-            sourcemap: !isProd
-        },
-        plugins: basePlugins
-    }*/
 ];

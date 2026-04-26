@@ -1,6 +1,6 @@
-// src/dom/events.js
+// src/dom/events.dom.js
 
-import { emit } from "../core/bus.js";
+import { emit } from "../../core/bus.js";
 
 export function initDomEvents() {
 
@@ -40,9 +40,6 @@ export function initDomEvents() {
     document.addEventListener("pause", (e) => {
         if (e.target.tagName === "VIDEO") {
             emit("media:paused");
-            const params = new URL(window.location.href);
-            if(params.pathname === "/watch")
-                emit("action:voiceRecognition")
         }
     }, true);
 
@@ -56,10 +53,6 @@ export function initDomEvents() {
     document.addEventListener("yt-playback-ended", (e) => {
         if (e.target.tagName === "YTK-PLAYER") {
             emit("media:ended");
-
-            const params = new URL(window.location.href);
-            if(params.pathname === "/watch")
-                emit("action:voiceRecognition")
         }
     }, true);
 
@@ -76,4 +69,23 @@ export function initDomEvents() {
         e.preventDefault();
         e.stopPropagation();
     }, true);
+
+    document.addEventListener("gesturestart", e => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    document.addEventListener("gesturechange", e => {
+        e.stopPropagation();
+        e.preventDefault()
+    });
+    document.addEventListener("gestureend", e => {
+        e.stopPropagation();
+        e.preventDefault()
+    });
+
+    window.addEventListener("wheel", (e) => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 }

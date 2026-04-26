@@ -1,4 +1,4 @@
-// src/core/presets/search.js
+// src/core/presets/search.action.js
 
 export const searchPresets = {
     "vi-VN": [

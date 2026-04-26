@@ -1,4 +1,6 @@
-// src/dom/videoMode.js
+// src/dom/video.dom.js
+
+import {clickEl, triggerTouch} from "./helpers.dom";
 
 function ensureOverlay() {
     const container = document.querySelector("#player-container-inner");
@@ -44,4 +46,19 @@ export function pauseVideo() {
 export function playVideo() {
     let video = document.querySelector("video.video-stream");
     if(video) video.play();
+}
+export function playFirstVideo() {
+    clickEl("ytk-compact-video-renderer");
+}
+
+export function isAutoPlay(){
+    let autoplayBtn = document.querySelector("#player-autoplay-button");
+    return autoplayBtn && autoplayBtn.ariaLabel.includes("on");
+}
+export function ensureAutoPlay(){
+    let autoplayBtn = document.querySelector("#player-autoplay-button");
+    if(autoplayBtn && autoplayBtn.ariaLabel.includes("off") && autoplayBtn.ariaDisabled === 'false'){
+        clickEl(autoplayBtn);
+        console.log(autoplayBtn.ariaLabel);
+    }
 }

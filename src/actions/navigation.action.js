@@ -1,7 +1,8 @@
-// src/actions/navigation.js
+// src/actions/navigation.dom.js
 
 import { on } from "../core/bus.js";
-import {hideNav, showNav, toggleNav} from "../dom/navigation.js";
+import {hideNav, showNav, toggleNav, watchItAgain} from "../ui/dom/navigation.dom.js";
+import {isAutoPlay} from "../ui/dom/video.dom";
 
 export function initNavigationAction() {
     on("intent:showNav", () => {
@@ -15,14 +16,16 @@ export function initNavigationAction() {
     });
 
     on("media:paused", () => {
-        showNav();
+        if(!isAutoPlay()){
+            showNav();
+        }
     });
 
     on("media:play", () => {
         hideNav();
     });
 
-    on("media:ended", () => {
-        showNav();
+    on("voice:error", () => {
+        watchItAgain();
     });
 }

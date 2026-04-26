@@ -1,5 +1,5 @@
 import { on } from "../../core/bus.js";
-import {speak, speak_i18n} from "../../services/speech.js";
+import {speak, speak_i18n} from "../../services/tts.service.js";
 import {getLang} from "../../core/config";
 
 export function initUiSpeech(){

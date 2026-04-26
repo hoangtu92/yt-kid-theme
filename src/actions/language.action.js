@@ -1,8 +1,8 @@
-// src/actions/language.js
+// src/actions/language.action.js
 
 import { on, emit } from "../core/bus.js";
 import { setLang } from "../core/config";
-import {speak_i18n} from "../services/speech";
+import {speak_i18n} from "../services/tts.service";
 
 export function initLanguageAction() {
     on("action:switchLanguage", async ({ targetLang }) => {
