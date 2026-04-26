@@ -6,6 +6,7 @@ import {getLang} from "../core/config";
 let recognition = null;
 let isRunning = false;
 let isStarting = false;
+let timeoutId;
 
 /**
  * Wait safely for recognition to end
@@ -44,6 +45,14 @@ export async function initRecognition() {
         isRunning = true;
         isStarting = false;
         emit("voice:start");
+
+        // 🔥 watchdog
+        timeoutId = setTimeout(() => {
+            console.warn("Speech timeout");
+
+            recognition.abort(); // force stop
+            waitForEndSafe();
+        }, 7000); // adjust (3–7s typical)
     };
 
     recognition.onend = () => {
@@ -78,10 +87,7 @@ export async function startRecognition() {
     await initRecognition();
 
     // stop previous safely
-    if (isRunning || isStarting) {
-        recognition.abort();
-        await waitForEndSafe();
-    }
+    await stopRecognition()
 
     const { speech: lang } = await getLang();
 
@@ -100,6 +106,7 @@ export async function stopRecognition() {
     if (!recognition) return;
 
     if (isRunning) {
+        console.log("Abort voice recognition")
         recognition.abort();
         await waitForEndSafe();
     }

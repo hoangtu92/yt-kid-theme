@@ -46,9 +46,9 @@ ytk-player{
     display: none;
 }
 
-.fullscreen:not(.search-mode){
+/*.fullscreen:not(.search-mode){
     overflow: hidden;
-}
+}*/
 
 .fullscreen ytk-player{
     position: fixed !important;
@@ -78,18 +78,23 @@ ytk-player{
 }
 
 .fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related {
-    display: grid;
+    /*display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     max-width: 1140px;
     margin: 0 auto;
     gap: 20px;
     width: 100%;
     overflow: hidden;
-    position: relative;
+    position: relative;*/
     /* Full width of its parent */
-    white-space: nowrap;
+    /*white-space: nowrap;
     padding: 15px;
-    box-sizing: border-box;
+    box-sizing: border-box;*/
+    display: none;
+}
+
+.fullscreen{
+    overflow: hidden;
 }
 
 /*.fullscreen #secondary-results.ytk-two-column-watch-next-results-renderer #related > * {

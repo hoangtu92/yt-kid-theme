@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {createTextMesh, updateTextMesh} from "./text";
 import {createParticleLayers} from "./layers";
-import {on} from "../../core/bus";
+import {emit, on} from "../../core/bus";
 
 export default function createEngine(ctx) {
 
@@ -46,6 +46,7 @@ export default function createEngine(ctx) {
 
         window.addEventListener("mousemove", onMouseMove);
         window.addEventListener("resize", onWindowResize);
+        window.addEventListener("click", onWindowClick);
 
         on("audio:level", (level) => {
             // smoothing happens here
@@ -70,6 +71,12 @@ export default function createEngine(ctx) {
         ctx.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
+    function onWindowClick(e){
+        if(e.target.tagName === "CANVAS"){
+            emit("action:stopRecognition")
+        }
+
+    }
 
     function destroy() {
 
@@ -77,6 +84,7 @@ export default function createEngine(ctx) {
 
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("resize", onWindowResize);
+        window.removeEventListener("click", onWindowClick);
 
         for (const layer of layers) {
             layer.destroy?.();

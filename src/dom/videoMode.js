@@ -41,3 +41,7 @@ export function pauseVideo() {
     let video = document.querySelector("video.video-stream");
     if(video) video.pause();
 }
+export function playVideo() {
+    let video = document.querySelector("video.video-stream");
+    if(video) video.play();
+}

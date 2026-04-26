@@ -16,7 +16,9 @@ export function initVoiceActions() {
     });
 
     on("action:stopRecognition", async () => {
-        await stopRecognition()
+        await stopRecognition();
+        emit("ui:particle:stop")
+        emit("media:play")
     })
 
     on("voice:interim", (text) => {

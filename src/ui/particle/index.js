@@ -22,7 +22,7 @@ export function initParticles() {
 
     on("ui:particle:stop", async () => {
         particleDom.wrapper.style.display = "none";
-        particle.destroy();
+        particle?.destroy();
         particle = null;
     });
 
