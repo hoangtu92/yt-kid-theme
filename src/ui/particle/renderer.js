@@ -79,13 +79,13 @@ export function animate(ctx) {
             u.uTime.value += 0.016 + level * 0.5;
 
             u.uRotation.value +=
-                s.rotationSpeed/10 * (1.0 + level * 5.0);
+                s.rotationSpeed/20 * (1.0 + level * 20);
 
             u.uMouse.value.set(mouse.x, mouse.y);
 
             u.uTurbulence.value = s.turbulence/100 + level/10;
             u.uScatter.value = s.scatterSize + level * 3;
-            u.uBrightness.value = s.brightness/20 + level*10;
+            u.uBrightness.value = s.brightness/30 + level*50;
 
             if (u.uRipple) {
                 u.uRippleSpeed.value = s.rippleSpeed/100 + level;

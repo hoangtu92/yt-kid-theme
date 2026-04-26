@@ -134,6 +134,12 @@ function createParticleMaterial(settings, l) {
         transparent: true, depthWrite: false, blending: blendingMode
     });
 }
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 
 /**
  *
@@ -143,15 +149,16 @@ function createParticleMaterial(settings, l) {
  */
 function initBinaryLayer(scene, settings) {
     const N = settings.particleCount;
-    const tex0 = createSingleTextTexture('0', settings.binaryColor0);
-    const tex1 = createSingleTextTexture('1', settings.binaryColor1);
+    const tex0 = createSingleTextTexture('A', settings.binaryColor0);
+    const tex1 = createSingleTextTexture('B', settings.binaryColor1);
+    const tex2 = createSingleTextTexture('C', "#F94449");
     const binaryLayer = { radii: new Float32Array(N), angles: new Float32Array(N), opacities: new Float32Array(N), points: [], settings };
 
     for (let i = 0; i < N; i++) {
-        const isOne = Math.random() > 0.5;
+        const isOne = getRandomInt(1, 3);
         const mat = new THREE.PointsMaterial({
             size: settings.baseSize * (1.0 + (Math.random() - 0.5) * settings.sizeRandomness * 2.0),
-            map: isOne ? tex1 : tex0, transparent: true, opacity: settings.baseOpacity,
+            map: isOne === 1 ? tex1 : isOne === 2 ? tex0: tex2, transparent: true, opacity: settings.baseOpacity,
             blending: THREE.AdditiveBlending, depthWrite: false, color: 'white'
         });
         const mesh = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array([0, 0, 0]), 3)), mat);
