@@ -83,15 +83,15 @@ export function animate(ctx) {
 
             u.uMouse.value.set(mouse.x, mouse.y);
 
-            u.uTurbulence.value = s.turbulence + level * 3;
+            u.uTurbulence.value = s.turbulence/10 + level * 3;
             u.uScatter.value = s.scatterSize + level * 3;
-            u.uBrightness.value = s.brightness + level * 10;
+            u.uBrightness.value = s.brightness/10 + level;
 
             if (u.uRipple) {
-                u.uRippleSpeed.value = s.rippleSpeed + level * 5;
+                u.uRippleSpeed.value = s.rippleSpeed/10 + level * 5;
             }
 
-            u.uCollision.value = s.collisionStrength + level * 5;
+            u.uCollision.value = s.collisionStrength/10 + level * 5;
         }
     }
 

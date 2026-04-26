@@ -70,6 +70,7 @@ export async function initRecognition() {
 
     recognition.onerror = async () => {
         emit("voice:error");
+        emit("voice:end");
     };
 }
 

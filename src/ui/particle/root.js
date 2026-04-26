@@ -7,22 +7,20 @@ export function initParticleRoot(canvas) {
 
     const ctx = createContext();
     const audio = createAudioSystem();
-    const engine = createEngine(ctx, audio);
+    const engine = createEngine(ctx);
 
     async function bootstrap() {
 
+        await audio.init();
         engine.init(canvas);        // subscribe to audio events
 
-        await audio.init();   // starts emitting audio:level
-
-        engine.start();       // optional lifecycle flag
         animate(ctx);            // 🔥 start render loop here
     }
 
     return {
         ctx,
-        engine,
         audio,
+        engine,
         bootstrap,
         destroy() {
             audio.destroy?.();

@@ -68,7 +68,6 @@ export default function createAudioSystem() {
 
     return {
         init,
-        getLevel,
         destroy
     };
 }

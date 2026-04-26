@@ -3,14 +3,13 @@ import {createTextMesh, updateTextMesh} from "./text";
 import {createParticleLayers} from "./layers";
 import {on} from "../../core/bus";
 
-export default function createEngine(ctx, audio) {
+export default function createEngine(ctx) {
 
     let scene, camera, renderer;
     let layers = [];
     let textMesh;
     let animationFrameId = null;
     let mouse = { x: 0, y: 0 };
-    let running = false;
     let voice = 0;
 
     function init(canvas) {
@@ -55,29 +54,6 @@ export default function createEngine(ctx, audio) {
         });
 
     }
-    function start() {
-        running = true;
-        loop();
-    }
-
-    function stop() {
-        running = false;
-    }
-
-    function updateVoiceLevel() {
-        const mic = audio.getLevel();
-        // 🔥 single source of truth
-        ctx.voiceLevel = mic * 0.6;
-    }
-
-    function loop() {
-        if (!running) return;
-
-        updateVoiceLevel();
-
-        requestAnimationFrame(loop);
-    }
-
 
     function updateText(text){
         updateTextMesh(ctx.textMesh, text);
@@ -118,8 +94,6 @@ export default function createEngine(ctx, audio) {
 
     return {
         init,
-        start,
-        stop,
         updateText,
         destroy
     };
