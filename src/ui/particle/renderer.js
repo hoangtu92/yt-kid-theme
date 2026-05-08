@@ -10,13 +10,13 @@ export function animate(ctx) {
     // --- TEXT MESH ---
     if (textMesh) {
 
-        const scale = 1 + level * 2;
+        //const scale = 1 + level * 2;
 
-        textMesh.scale.set(3 * scale, 0.8 * scale, 1);
+        //textMesh.scale.set(3 * scale, 0.8 * scale, 1);
 
-        textMesh.material.opacity = 0.6 + level * 1.5;
+        textMesh.material.opacity = 0.3 + level * 1.5;
 
-        textMesh.position.z = 0.5 + level * 2.0;
+        //textMesh.position.z = 0.5 + level * 2.0;
     }
 
     // --- LAYERS LOOP ---
