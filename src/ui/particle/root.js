@@ -2,6 +2,7 @@ import createAudioSystem from "./audio";
 import createEngine from "./engine";
 import {destroyLayers} from "./layers";
 import {animate} from "./renderer";
+import {destroyParticleDom} from "./dom";
 
 export function initParticleRoot(canvas) {
 
@@ -26,6 +27,7 @@ export function initParticleRoot(canvas) {
             audio.destroy?.();
             engine.destroy();
             destroyLayers(ctx);
+            destroyParticleDom();
         }
     };
 }

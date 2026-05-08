@@ -36,4 +36,7 @@ export function destroyParticleDom() {
             gl.getExtension('WEBGL_lose_context').loseContext();
         }
     }
+
+    let wrapper = document.querySelector(".particle-loader-wrapper");
+    if(wrapper) wrapper.parentNode.removeChild(wrapper);
 }

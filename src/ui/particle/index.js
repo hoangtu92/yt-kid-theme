@@ -14,6 +14,7 @@ export function initParticles() {
     // ----------------------------
 
     on("ui:particle:start", async () => {
+        if(!particleDom) particleDom = ensureParticleWrapper();
         hasError = false;
         particle = initParticleRoot(particleDom.canvas);
         await particle.bootstrap();
@@ -21,8 +22,8 @@ export function initParticles() {
     });
 
     on("ui:particle:stop", async () => {
-        particleDom.wrapper.style.display = "none";
         particle?.destroy();
+        particleDom = null;
         particle = null;
     });
 

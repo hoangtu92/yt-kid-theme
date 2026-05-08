@@ -78,6 +78,21 @@ export default function createEngine(ctx) {
 
     }
 
+    function disposeMaterial(material) {
+
+        // Dispose textures
+        for (const key in material) {
+
+            const value = material[key];
+
+            if (value && value.isTexture) {
+                value.dispose();
+            }
+        }
+
+        material.dispose();
+    }
+
     function destroy() {
 
         cancelAnimationFrame(animationFrameId);
@@ -90,7 +105,50 @@ export default function createEngine(ctx) {
             layer.destroy?.();
         }
 
-        renderer?.dispose();
+        if (scene) {
+
+            scene.traverse((obj) => {
+
+                // Geometry
+                if (obj.geometry) {
+                    obj.geometry.dispose();
+                }
+
+                // Material
+                if (obj.material) {
+
+                    // Multiple materials
+                    if (Array.isArray(obj.material)) {
+
+                        obj.material.forEach(mat => disposeMaterial(mat));
+
+                    } else {
+
+                        disposeMaterial(obj.material);
+
+                    }
+                }
+            });
+
+            // Remove all children
+            while (scene.children.length > 0) {
+                scene.remove(scene.children[0]);
+            }
+        }
+
+        if (renderer) {
+
+            renderer.renderLists.dispose();
+
+            renderer.dispose();
+
+            // 🔥 VERY IMPORTANT
+            renderer.forceContextLoss();
+
+            renderer.domElement = null;
+
+            renderer = null;
+        }
 
         // --- Dispose camera ---
 
@@ -98,6 +156,12 @@ export default function createEngine(ctx) {
         camera = null;
         renderer = null;
         layers = [];
+
+        const canvas = document.getElementById('particle-canvas');
+
+        if (canvas && canvas.parentNode) {
+            canvas.parentNode.removeChild(canvas);
+        }
     }
 
     return {

@@ -8,6 +8,7 @@ export function initVoiceActions() {
 
     // 🔊 START VOICE
     on("action:voiceRecognition", async () => {
+        emit("ui:particle:start");
         await startRecognition();
     });
 
@@ -18,7 +19,7 @@ export function initVoiceActions() {
 
     // 🎙 START EVENT (real source of truth)
     on("voice:start", () => {
-        emit("ui:particle:start");
+
     });
 
     // 🛑 END EVENT (single place to stop UI)
